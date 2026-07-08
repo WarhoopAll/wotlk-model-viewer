@@ -252,8 +252,7 @@ async function findItemsInEquipments(equipments, env=`live`) {
  * @returns {Promise<Object>}
  */
 async function findRaceGenderOptions(race, gender) {
-    const raceGender = race * 2 - 1 + gender
-    const options = await fetch(`${window.CONTENT_PATH}meta/charactercustomization/${raceGender}.json`)
+    const options = await fetch(`${window.CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`)
         .then(
             (response) => response.json()
         )

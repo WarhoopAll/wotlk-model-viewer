@@ -1,5 +1,5 @@
 if(!window.CONTENT_PATH){
-    window.CONTENT_PATH =`http://localhost:3001/modelviewer/live/`
+    window.CONTENT_PATH =`/data/`
 }
 if(!window.WOTLK_TO_RETAIL_DISPLAY_ID_API){
     window.WOTLK_TO_RETAIL_DISPLAY_ID_API=`https://wotlk.murlocvillage.com/api/items`
