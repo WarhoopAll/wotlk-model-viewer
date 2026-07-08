@@ -9,6 +9,19 @@ const NOT_DISPLAYED_SLOTS = [
     14, // trinket2
 ]
 
+const RACES = {
+    1: `human`,
+    2: `orc`,
+    3: `dwarf`,
+    4: `nightelf`,
+    5: `scourge`,
+    6: `tauren`,
+    7: `gnome`,
+    8: `troll`,
+    10: `bloodelf`,
+    11: `draenei`
+}
+
 const modelingType = {
     ARMOR: 128,
     CHARACTER: 16,
@@ -118,7 +131,8 @@ function getCharacterOptions(character, fullOptions) {
 function optionsFromModel(model, fullOptions) {
     const {race, gender} = model
 
-
+    const retGender = (gender === 1) ? `female` : `male`
+    const raceToModelId = RACES[race] + retGender
     // slot ids on model viewer
     const characterItems = (model.items) ? model.items.filter(e => !NOT_DISPLAYED_SLOTS.includes(e[0])) : []
     const options = getCharacterOptions(model, fullOptions)
@@ -128,7 +142,7 @@ function optionsFromModel(model, fullOptions) {
     const ret = {
         items: characterItems,
         models: {
-            id: race*2-1+gender,
+            id: raceToModelId,
             type: modelingType.CHARACTER
         },
     }
@@ -266,6 +280,7 @@ async function findRaceGenderOptions(race, gender) {
 export {
     optionsFromModel,
     findRaceGenderOptions,
+    RACES,
     findItemsInEquipments,
     getDisplaySlot,
     getCharacterOptions,
