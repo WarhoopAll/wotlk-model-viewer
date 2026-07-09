@@ -19,7 +19,9 @@ class WowModelViewer extends ZamModelViewer {
      * @param {number} val
      */
     setDistance(val) {
-        this.renderer.distance = val
+        if (this.renderer) {
+            this.renderer.distance = val
+        }
     }
 
     /**
@@ -27,7 +29,7 @@ class WowModelViewer extends ZamModelViewer {
      * @param {string} val
      */
     setAnimation(val) {
-        this.renderer.actors[0].setAnimation(val)
+        this.renderer?.actors?.[0]?.setAnimation(val)
     }
 
     /**
@@ -35,7 +37,7 @@ class WowModelViewer extends ZamModelViewer {
      * @param {boolean} val
      */
     setAnimPaused(val) {
-        this.renderer.actors[0].setAnimPaused(val)
+        this.renderer?.actors?.[0]?.setAnimPaused(val)
     }
 
     /**
@@ -43,7 +45,9 @@ class WowModelViewer extends ZamModelViewer {
      * @param {number} val
      */
     setAzimuth(val) {
-        this.renderer.azimuth = val
+        if (this.renderer) {
+            this.renderer.azimuth = val
+        }
     }
 
     /**
@@ -51,7 +55,9 @@ class WowModelViewer extends ZamModelViewer {
      * @param {number} val
      */
     setZenith(val) {
-        this.renderer.zenith = val
+        if (this.renderer) {
+            this.renderer.zenith = val
+        }
     }
 
     /**
@@ -59,7 +65,7 @@ class WowModelViewer extends ZamModelViewer {
      * @return {number}
      */
     getAzimuth() {
-        return this.renderer.azimuth
+        return this.renderer?.azimuth
     }
 
     /**
@@ -67,7 +73,7 @@ class WowModelViewer extends ZamModelViewer {
      * @return {number}
      */
     getZenith() {
-        return this.renderer.zenith
+        return this.renderer?.zenith
     }
 
     /**
