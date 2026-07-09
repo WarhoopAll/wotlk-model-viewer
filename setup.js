@@ -12,6 +12,7 @@ class WebP {
 
 }
 
+
 if (!window.WH) {
     window.WH = {}
     window.WH.debug = function (...args) { console.log(args) }
@@ -55,6 +56,8 @@ if (!window.WH) {
     // eslint-disable-next-line no-undef
 }
 const WH = window.WH
+
+import './vendor/viewer.min.js'
 
 export {
     WH,
