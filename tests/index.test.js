@@ -41,7 +41,7 @@ describe(`getDisplaySlot`, () => {
 
         expect(result).toEqual({displaySlot: slot, displayId: displayId})
         expect(global.fetch).toHaveBeenCalledWith(
-            `http://localhost:3001/modelviewer/live/meta/armor/${slot}/${displayId}.json`
+            `/data/meta/armor/${slot}/${displayId}.json`
         )
     })
 
@@ -88,7 +88,7 @@ describe(`getDisplaySlot`, () => {
 
         expect(result).toEqual({displaySlot: slot, displayId: displayId})
         expect(global.fetch).toHaveBeenCalledWith(
-            `http://localhost:3001/modelviewer/live/meta/armor/${slot}/${displayId}.json`
+            `/data/meta/armor/${slot}/${displayId}.json`
         )
     })
 
@@ -108,7 +108,7 @@ describe(`getDisplaySlot`, () => {
 
         expect(result).toEqual({displaySlot: slot, displayId: displayId})
         expect(global.fetch).toHaveBeenCalledWith(
-            `http://localhost:3001/modelviewer/live/meta/armor/${slot}/${displayId}.json`
+            `/data/meta/armor/${slot}/${displayId}.json`
         )
     })
 
@@ -126,7 +126,7 @@ describe(`getDisplaySlot`, () => {
 
         await expect(getDisplaySlot(item, slot, displayId)).rejects.toThrow(`displayId must be a number`)
         expect(global.fetch).not.toHaveBeenCalledWith(
-            `http://localhost:3001/modelviewer/live/meta/armor/${item}/${displayId}`
+            `/data/meta/armor/${item}/${displayId}`
         )
     })
 })
@@ -160,7 +160,7 @@ describe(`findRaceGenderOptions`, () => {
         const result = await findRaceGenderOptions(2, 1)
 
         expect(fetch).toHaveBeenCalledTimes(1)
-        expect(fetch).toHaveBeenCalledWith(`http://localhost:3001/modelviewer/live/meta/charactercustomization2/2_1.json`)
+        expect(fetch).toHaveBeenCalledWith(`/data/meta/charactercustomization2/2_1.json`)
         expect(result).toEqual(mockResponse)
     })
 })
