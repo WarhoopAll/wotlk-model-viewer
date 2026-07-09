@@ -25,6 +25,14 @@ class WowModelViewer extends ZamModelViewer {
     }
 
     /**
+     * Returns character distance
+     * @return {number}
+     */
+    getDistance() {
+        return this.renderer?.distance
+    }
+
+    /**
      * Change the animation
      * @param {string} val
      */
@@ -37,6 +45,9 @@ class WowModelViewer extends ZamModelViewer {
      * @param {boolean} val
      */
     setAnimPaused(val) {
+        if (val === ``) {
+            throw new Error(`Empty value not allowed`)
+        }
         this.renderer?.actors?.[0]?.setAnimPaused(val)
     }
 
@@ -65,7 +76,7 @@ class WowModelViewer extends ZamModelViewer {
      * @return {number}
      */
     getAzimuth() {
-        return this.renderer?.azimuth
+        return this.renderer?.azimuth ?? 0
     }
 
     /**
@@ -73,7 +84,7 @@ class WowModelViewer extends ZamModelViewer {
      * @return {number}
      */
     getZenith() {
-        return this.renderer?.zenith
+        return this.renderer?.zenith ?? 0
     }
 
     /**

@@ -1,7 +1,6 @@
 global.fetch = require(`node-fetch`)
 const {describe, it} = require(`@jest/globals`)
 
-import './mocks.js'
 // Import the module to be tested
 import {findItemsInEquipments, findRaceGenderOptions, getDisplaySlot} from '../index'
 
