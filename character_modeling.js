@@ -125,6 +125,10 @@ function getCharacterOptions(character, fullOptions) {
 /**
  * This function return the design choices for a character this does not work for NPC / Creature / Items
  * @param {Object} model - The model object to generate options from.
+ * @param {number} model.race - The race of the character.
+ * @param {number} model.gender - The gender of the character.
+ * @param {Array<Array<number>>} [model.items] - The items array.
+ * @param {boolean} [model.noCharCustomization] - If true, skip character customization.
  * @param {{}} fullOptions - The type of the model.
  * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}}
  */
