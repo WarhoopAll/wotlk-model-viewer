@@ -107,16 +107,13 @@ function getCharacterOptions(character, fullOptions) {
         const partKey = parts[prop]
         let choiceId
 
-        // Если есть ключ для свойства и само свойство пришло в character
         if (partKey && character[partKey] !== undefined) {
             const choice = part.Choices?.[character[partKey]]
             choiceId = optionalChaining(choice)
         }
 
-        // Fallback: берем первый доступный выбор, если не нашли нужный
         if (choiceId === undefined) {
             choiceId = part.Choices[0]?.Id
-            // Логируем как missing только если свойство вообще должно было быть (partKey существует), но не нашлось в Choices
             if (partKey && character[partKey] !== undefined) {
                 missingChoice.push(partKey)
             }
@@ -131,7 +128,7 @@ function getCharacterOptions(character, fullOptions) {
     }
 
     if (missingChoice.length > 0) {
-        console.warn(`In character: `, character, `the following options are missing`, missingChoice)
+        window.WH.debug(`In character: `, character, `the following options are missing`, missingChoice)
     }
 
     return ret
@@ -230,7 +227,7 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
     }[slot]
 
     if (!retSlot) {
-        console.warn(`Item: ${item} display: ${displayId} or slot: ${slot} not found for `)
+        window.WH.debug(`Item: ${item} display: ${displayId} or slot: ${slot} not found for `)
 
         return {
             displaySlot: slot,
