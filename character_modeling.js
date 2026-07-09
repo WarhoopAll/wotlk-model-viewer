@@ -1,4 +1,3 @@
-
 import "./setup.js"
 
 const NOT_DISPLAYED_SLOTS = [
@@ -36,44 +35,39 @@ const modelingType = {
     SHOULDER: 4
 }
 
-const characterPart = () => {
-    const ret = {
-        Face: `face`,
-        "Skin Color": `skin`,
-        "Hair Style": `hairStyle`,
-        "Hair Color": `hairColor`,
-        "Facial Hair": `facialStyle`,
-        Mustache: `facialStyle`,
-        Beard: `facialStyle`,
-        Sideburns: `facialStyle`,
-        "Face Shape": `facialStyle`,
-        Eyebrow: `facialStyle`,
-        "Jaw Features": undefined,
-        "Face Features": undefined,
-        "Skin Type": undefined,
-        Ears: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `ears`,
-        "Fur Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `furColor`,
-        Snout: `snout`,
-        Blindfold: undefined,
-        Tattoo: undefined,
-        "Eye Color": undefined,
-        "Tattoo Color": undefined,
-        Armbands: undefined,
-        "Jewelry Color": undefined,
-        Bracelets: undefined,
-        Necklace: undefined,
-        Earring: undefined,
-        "Primary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `primaryColor`,
-        "Secondary Color Strength": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColorStrength`,
-        "Secondary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColor`,
-        "Horn Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `hornColor`,
-        Horns: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `horns`,
-        "Body Size": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `bodySize`
-    }
-    console.log(ret)
-    return ret
-}
-
+const characterPart = () => ({
+    Face: `face`,
+    "Skin Color": `skin`,
+    "Hair Style": `hairStyle`,
+    "Hair Color": `hairColor`,
+    "Facial Hair": `facialStyle`,
+    Mustache: `facialStyle`,
+    Beard: `facialStyle`,
+    Sideburns: `facialStyle`,
+    "Face Shape": `facialStyle`,
+    Eyebrow: `facialStyle`,
+    "Jaw Features": undefined,
+    "Face Features": undefined,
+    "Skin Type": undefined,
+    Ears: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `ears`,
+    "Fur Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `furColor`,
+    Snout: `snout`,
+    Blindfold: undefined,
+    Tattoo: undefined,
+    "Eye Color": undefined,
+    "Tattoo Color": undefined,
+    Armbands: undefined,
+    "Jewelry Color": undefined,
+    Bracelets: undefined,
+    Necklace: undefined,
+    Earring: undefined,
+    "Primary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `primaryColor`,
+    "Secondary Color Strength": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColorStrength`,
+    "Secondary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColor`,
+    "Horn Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `hornColor`,
+    Horns: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `horns`,
+    "Body Size": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `bodySize`
+})
 
 
 function optionalChaining(choice) {
@@ -86,38 +80,59 @@ function optionalChaining(choice) {
 /**
  *
  * @param {Object} character - The character object.
- * @param {number} character.face - Description for face.
- * @param {number} character.facialStyle - Description for facialStyle.
- * @param {number} character.gender - Description for gender.
- * @param {number} character.hairColor - Description for hairColor.
- * @param {number} character.hairStyle - Description for hairStyle.
- * @param {Array<Array<number>>} character.items - Description for items. (Optional)
- * @param {number} character.race - Description for race.
- * @param {number} character.skin - Description for skin.
+ * @param {number} [character.face] - Description for face.
+ * @param {number} [character.facialStyle] - Description for facialStyle.
+ * @param {number} [character.gender] - Description for gender.
+ * @param {number} [character.hairColor] - Description for hairColor.
+ * @param {number} [character.hairStyle] - Description for hairStyle.
+ * @param {Array<Array<number>>} [character.items] - Description for items.
+ * @param {number} [character.race] - Description for race.
+ * @param {number} [character.skin] - Description for skin.
  * @param {Object} fullOptions - Zaming API character options payload.
  * @return {[]}
  */
 function getCharacterOptions(character, fullOptions) {
-    const options = fullOptions.Options
+    const options = fullOptions?.Options || []
+    const parts = characterPart()
     const missingChoice = []
     const ret = []
-    for (const prop in characterPart()) {
+
+    for (const prop in parts) {
         const part = options.find(e => e.Name === prop)
 
-        if (!part) {
+        if (!part || !part.Choices || part.Choices.length === 0) {
             continue
         }
 
-        const newOption = {
-            optionId: part.Id,
-            choiceId: (characterPart()[prop]) ? optionalChaining(part.Choices[character[characterPart()[prop]]]) : part.Choices[0].Id
+        const partKey = parts[prop]
+        let choiceId
+
+        // Если есть ключ для свойства и само свойство пришло в character
+        if (partKey && character[partKey] !== undefined) {
+            const choice = part.Choices?.[character[partKey]]
+            choiceId = optionalChaining(choice)
         }
-        if(newOption.choiceId === undefined) {
-            missingChoice.push(characterPart()[prop])
+
+        // Fallback: берем первый доступный выбор, если не нашли нужный
+        if (choiceId === undefined) {
+            choiceId = part.Choices[0]?.Id
+            // Логируем как missing только если свойство вообще должно было быть (partKey существует), но не нашлось в Choices
+            if (partKey && character[partKey] !== undefined) {
+                missingChoice.push(partKey)
+            }
         }
-        ret.push(newOption)
+
+        if (choiceId !== undefined) {
+            ret.push({
+                optionId: part.Id,
+                choiceId: choiceId
+            })
+        }
     }
-    console.warn(`In character: `, character, `the following options are missing`, missingChoice)
+
+    if (missingChoice.length > 0) {
+        console.warn(`In character: `, character, `the following options are missing`, missingChoice)
+    }
 
     return ret
 }
@@ -137,12 +152,13 @@ function optionsFromModel(model, fullOptions) {
 
     const retGender = (gender === 1) ? `female` : `male`
     const raceToModelId = RACES[race] + retGender
-    // slot ids on model viewer
-    const characterItems = (model.items) ? model.items.filter(e => !NOT_DISPLAYED_SLOTS.includes(e[0])) : []
+    const characterItems = (model.items) ? model.items.filter(e => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.includes(e[0])) : []
     const options = getCharacterOptions(model, fullOptions)
-    let charCustomization = {
+
+    const charCustomization = {
         options: options
     }
+
     const ret = {
         items: characterItems,
         models: {
@@ -243,7 +259,11 @@ async function findItemsInEquipments(equipments, env=`live`) {
             continue
         }
 
-        const displayedItem = (Object.keys(equipment.transmog).length !== 0) ? equipment.transmog : equipment.item
+        const hasTransmog = equipment.transmog && Object.keys(equipment.transmog).length !== 0
+        const displayedItem = hasTransmog ? equipment.transmog : equipment.item
+
+        if (!displayedItem) continue
+
         const displaySlot = await getDisplaySlot(
             displayedItem.entry,
             equipment.slot,
@@ -257,9 +277,9 @@ async function findItemsInEquipments(equipments, env=`live`) {
     return equipments
         .filter(e => e.displaySlot)
         .map(e => [
-            e.displaySlot,
-            e.displayId
-        ]
+                e.displaySlot,
+                e.displayId
+            ]
         )
 }
 
