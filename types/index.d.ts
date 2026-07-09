@@ -1,4 +1,6 @@
-import { findRaceGenderOptions } from "./character_modeling.js";
+import { WowModelViewer } from './wow_model_viewer.js';
+import { findRaceGenderOptions, getDisplaySlot, findItemsInEquipments, modelingType } from "./character_modeling.js";
+import "./setup.js";
 /**
  *
  * @param aspect {number}: Size of the character
@@ -7,12 +9,8 @@ import { findRaceGenderOptions } from "./character_modeling.js";
  * @param env {('classic'|'live')}: select game enve
  * @returns {Promise<WowModelViewer>}
  */
-export function generateModels(aspect: number, containerSelector: string, model: {} | {
+declare function generateModels(aspect: number, containerSelector: string, model: {} | {
     id: number;
     type: number;
 }, env?: ('classic' | 'live')): Promise<WowModelViewer>;
-import { getDisplaySlot } from "./character_modeling.js";
-import { findItemsInEquipments } from "./character_modeling.js";
-import { modelingType } from "./character_modeling.js";
-import { WowModelViewer } from './wow_model_viewer.js';
-export { findRaceGenderOptions, getDisplaySlot, findItemsInEquipments, modelingType };
+export { findRaceGenderOptions, generateModels, getDisplaySlot, findItemsInEquipments, modelingType };

@@ -1,32 +1,5 @@
-/**
- * This function return the design choices for a character this does not work for NPC / Creature / Items
- * @param {Object} model - The model object to generate options from.
- * @param {{}} fullOptions - The type of the model.
- * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}
- */
-export function optionsFromModel(model: any, fullOptions: {}): {
-    models: {
-        id: string;
-        type: number;
-    };
-    charCustomization: {
-        options: [];
-    };
-    items: (any | any[]);
-} | {
-    models: {
-        id;
-        type;
-    };
-};
-/**
- *
- * @param {number} race
- * @param {number} gender
- * @returns {Promise<Object>}
- */
-export function findRaceGenderOptions(race: number, gender: number): Promise<any>;
-export const RACES: {
+import "./setup.js";
+declare const RACES: {
     1: string;
     2: string;
     3: string;
@@ -38,23 +11,52 @@ export const RACES: {
     10: string;
     11: string;
 };
-/**
- * Returns a 2-dimensional list the inner list contains on first position the item slot, the second the item
- * display-id ex: [[1,1170],[3,4925]]
- * @param {*[{item: {entry: number, displayid: number}, transmog: {entry: number, displayid: number}, slot: number}]} equipments
- * @param env {('classic'|'live')}: select game enve
- * @returns {Promise<number[]>}
- */
-export function findItemsInEquipments(equipments: any, env?: ('classic' | 'live')): Promise<number[]>;
-/**
- *
- * @param item{number}: Item id
- * @param slot{number}: Item slot number
- * @param displayId{number}: DisplayId of the item
- * @param env {('classic'|'live')}: select game env
- * @return {Promise<boolean|*>}
- */
-export function getDisplaySlot(item: number, slot: number, displayId: number, env?: ('classic' | 'live')): Promise<boolean | any>;
+declare const modelingType: {
+    ARMOR: number;
+    CHARACTER: number;
+    COLLECTION: number;
+    HELM: number;
+    HUMANOIDNPC: number;
+    ITEM: number;
+    ITEMVISUAL: number;
+    NPC: number;
+    OBJECT: number;
+    PATH: number;
+    SHOULDER: number;
+};
+declare const characterPart: () => {
+    Face: string;
+    "Skin Color": string;
+    "Hair Style": string;
+    "Hair Color": string;
+    "Facial Hair": string;
+    Mustache: string;
+    Beard: string;
+    Sideburns: string;
+    "Face Shape": string;
+    Eyebrow: string;
+    "Jaw Features": undefined;
+    "Face Features": undefined;
+    "Skin Type": undefined;
+    Ears: string | undefined;
+    "Fur Color": string | undefined;
+    Snout: string;
+    Blindfold: undefined;
+    Tattoo: undefined;
+    "Eye Color": undefined;
+    "Tattoo Color": undefined;
+    Armbands: undefined;
+    "Jewelry Color": undefined;
+    Bracelets: undefined;
+    Necklace: undefined;
+    Earring: undefined;
+    "Primary Color": string | undefined;
+    "Secondary Color Strength": string | undefined;
+    "Secondary Color": string | undefined;
+    "Horn Color": string | undefined;
+    Horns: string | undefined;
+    "Body Size": string | undefined;
+};
 /**
  *
  * @param {Object} character - The character object.
@@ -69,7 +71,7 @@ export function getDisplaySlot(item: number, slot: number, displayId: number, en
  * @param {Object} fullOptions - Zaming API character options payload.
  * @return {[]}
  */
-export function getCharacterOptions(character: {
+declare function getCharacterOptions(character: {
     face: number;
     facialStyle: number;
     gender: number;
@@ -78,50 +80,60 @@ export function getCharacterOptions(character: {
     items: Array<Array<number>>;
     race: number;
     skin: number;
-}, fullOptions: any): [];
-export function characterPart(): {
-    Face: string;
-    "Skin Color": string;
-    "Hair Style": string;
-    "Hair Color": string;
-    "Facial Hair": string;
-    Mustache: string;
-    Beard: string;
-    Sideburns: string;
-    "Face Shape": string;
-    Eyebrow: string;
-    "Jaw Features": any;
-    "Face Features": any;
-    "Skin Type": any;
-    Ears: string;
-    "Fur Color": string;
-    Snout: string;
-    Blindfold: any;
-    Tattoo: any;
-    "Eye Color": any;
-    "Tattoo Color": any;
-    Armbands: any;
-    "Jewelry Color": any;
-    Bracelets: any;
-    Necklace: any;
-    Earring: any;
-    "Primary Color": string;
-    "Secondary Color Strength": string;
-    "Secondary Color": string;
-    "Horn Color": string;
-    Horns: string;
-    "Body Size": string;
+}, fullOptions: Object): [];
+/**
+ * This function return the design choices for a character this does not work for NPC / Creature / Items
+ * @param {Object} model - The model object to generate options from.
+ * @param {{}} fullOptions - The type of the model.
+ * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}}
+ */
+declare function optionsFromModel(model: Object, fullOptions: {}): {
+    models: {
+        id: string;
+        type: number;
+    };
+    charCustomization: {
+        options: [];
+    };
+    items: (any | any[]);
+} | {
+    models: {
+        id: any;
+        type: any;
+    };
 };
-export namespace modelingType {
-    let ARMOR: number;
-    let CHARACTER: number;
-    let COLLECTION: number;
-    let HELM: number;
-    let HUMANOIDNPC: number;
-    let ITEM: number;
-    let ITEMVISUAL: number;
-    let NPC: number;
-    let OBJECT: number;
-    let PATH: number;
-    let SHOULDER: number;
-}
+/**
+ *
+ * @param item{number}: Item id
+ * @param slot{number}: Item slot number
+ * @param displayId{number}: DisplayId of the item
+ * @param env {('classic'|'live')}: select game env
+ * @return {Promise<boolean|*>}
+ */
+declare function getDisplaySlot(item: number, slot: number, displayId: number, env?: ('classic' | 'live')): Promise<boolean | any>;
+/**
+ * Returns a 2-dimensional list the inner list contains on first position the item slot, the second the item
+ * display-id ex: [[1,1170],[3,4925]]
+ * @param {*[{item: {entry: number, displayid: number}, transmog: {entry: number, displayid: number}, slot: number}]} equipments
+ * @param env {('classic'|'live')}: select game enve
+ * @returns {Promise<number[]>}
+ */
+declare function findItemsInEquipments(equipments: any[{
+    item: {
+        entry: number;
+        displayid: number;
+    };
+    transmog: {
+        entry: number;
+        displayid: number;
+    };
+    slot: number;
+}], env?: ('classic' | 'live')): Promise<number[]>;
+/**
+ *
+ * @param {number} race
+ * @param {number} gender
+ * @returns {Promise<Object>}
+ */
+declare function findRaceGenderOptions(race: number, gender: number): Promise<Object>;
+export { optionsFromModel, findRaceGenderOptions, RACES, findItemsInEquipments, getDisplaySlot, getCharacterOptions, characterPart, modelingType };

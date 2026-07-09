@@ -126,7 +126,7 @@ function getCharacterOptions(character, fullOptions) {
  * This function return the design choices for a character this does not work for NPC / Creature / Items
  * @param {Object} model - The model object to generate options from.
  * @param {{}} fullOptions - The type of the model.
- * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}
+ * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}}
  */
 function optionsFromModel(model, fullOptions) {
     const {race, gender} = model
@@ -186,6 +186,7 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
             displaySlot: slot,
             displayId: displayId
         }
+        // eslint-disable-next-line no-unused-vars
     } catch (e) {
         if(!window.WOTLK_TO_RETAIL_DISPLAY_ID_API){
             throw Error(`Item not found and window.WOTLK_TO_RETAIL_DISPLAY_ID_API not set`)

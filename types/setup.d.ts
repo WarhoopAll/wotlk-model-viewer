@@ -1,1 +1,2 @@
-export const WH: any;
+declare const WH: any;
+export { WH, };

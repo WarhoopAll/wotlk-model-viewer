@@ -1,4 +1,4 @@
-export class WowModelViewer {
+declare class WowModelViewer extends ZamModelViewer {
     /**
      * Returns the list of animation names
      * @returns {Array.<string>}
@@ -48,13 +48,5 @@ export class WowModelViewer {
      */
     updateItemViewer(slot: number, displayId: number, enchant: number): void;
     setNewAppearance(options: any): void;
-    _currentCharacterOptions: number;
-    _characterGender: any;
-    _characterRace: any;
-    set currentCharacterOptions(arg: any);
-    get currentCharacterOptions(): any;
-    set characterGender(arg: any);
-    get characterGender(): any;
-    set characterRace(arg: any);
-    get characterRace(): any;
 }
+export { WowModelViewer, };
