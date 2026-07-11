@@ -31,11 +31,6 @@
         }
         .loading.hidden { opacity: 0; pointer-events: none; }
         .controls { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
-        .controls select {
-            flex: 1; padding: 6px 8px; border: 1px solid #0f3460; border-radius: 4px;
-            background: #1a1a2e; color: #eee; font-size: 13px; cursor: pointer;
-        }
-        .controls select:focus { outline: none; border-color: #a0d2ff; }
         .btn {
             padding: 6px 12px; border: 1px solid #0f3460; border-radius: 4px;
             background: #1a1a2e; color: #a0d2ff; font-size: 13px; cursor: pointer;
@@ -55,14 +50,8 @@
         <div class="sub" id="char-meta">Gnome Mage</div>
 
         <div class="section">Animation</div>
-        <div class="controls" id="animButtons">
-            <button class="btn" data-anim="Stand">Stand</button>
-            <button class="btn" data-anim="Walk">Walk</button>
-            <button class="btn" data-anim="Run">Run</button>
-            <button class="btn" data-anim="Dance">Dance</button>
-            <button class="btn" data-anim="Kiss">Kiss</button>
-            <button class="btn" data-anim="Sit">Sit</button>
-            <button class="btn" data-anim="Sleep">Sleep</button>
+        <div class="controls" id="animButtons" style="flex-wrap:wrap;">
+            <div id="animList" style="display:flex;flex-wrap:wrap;gap:4px;width:100%;"></div>
             <button class="btn btn-icon" id="btnPause" title="Play/Pause">⏸</button>
         </div>
 
@@ -71,14 +60,6 @@
 
         <div class="section">Character</div>
         <table id="char-details"></table>
-
-        <div class="section">Camera</div>
-        <div class="controls">
-            <button class="btn" id="btnResetCam">Reset</button>
-            <button class="btn" id="btnFront">Front</button>
-            <button class="btn" id="btnSide">Side</button>
-            <button class="btn" id="btnBack">Back</button>
-        </div>
     </div>
 </div>
 
@@ -129,13 +110,38 @@ const model = await generateModels(1, '#model_3d', {
     hideProgressBar: true,
     onReady: () => {
         document.getElementById('loading').classList.add('hidden')
+        model.setDistance(22)
+        model.setOffset(0, -2)
         initAnimControls()
     }
 })
 
 function initAnimControls() {
-    document.querySelectorAll('[data-anim]').forEach(btn => {
-        btn.addEventListener('click', () => model.setAnimation(btn.dataset.anim))
+    const container = document.getElementById('animList')
+    const FALLBACK = ['Stand','Walk','Run','Dance','Kiss','Sit','Sleep','Swim','Jump']
+
+    const list = model.getListAnimations()
+    const names = list.length ? list : FALLBACK
+    console.log('[demo] animations:', names)
+    const actor = model.renderer?.models?.[0]
+    if (actor?.an) {
+        console.log('[demo] an entries:', actor.an.map(a => ({ j: a.j, b: a.b, a: a.a })))
+    }
+
+    names.forEach(name => {
+        const btn = document.createElement('button')
+        btn.className = 'btn'
+        btn.textContent = name
+        btn.addEventListener('click', () => {
+            console.log('[demo] setAnimation:', name)
+            const actor = model.renderer?.models?.[0]
+            if (actor) {
+                console.log('[demo] an count:', actor.an?.length)
+                actor.setAnimation(name)
+                if (actor.by) actor.by(true)
+            }
+        })
+        container.appendChild(btn)
     })
 
     const btnPause = document.getElementById('btnPause')
@@ -147,24 +153,6 @@ function initAnimControls() {
         btnPause.classList.toggle('active', paused)
     })
 }
-
-document.getElementById('btnResetCam').addEventListener('click', () => {
-    model.setAzimuth(0)
-    model.setZenith(Math.PI / 3)
-    model.setDistance(2.5)
-})
-document.getElementById('btnFront').addEventListener('click', () => {
-    model.setAzimuth(0)
-    model.setZenith(Math.PI / 2)
-})
-document.getElementById('btnSide').addEventListener('click', () => {
-    model.setAzimuth(Math.PI / 2)
-    model.setZenith(Math.PI / 2)
-})
-document.getElementById('btnBack').addEventListener('click', () => {
-    model.setAzimuth(Math.PI)
-    model.setZenith(Math.PI / 2)
-})
 </script>
 </body>
 </html>
