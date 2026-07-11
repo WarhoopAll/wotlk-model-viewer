@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoW Model Viewer Demo</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
+    <script src="vendor/viewer.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1a1a2e; color: #eee; font-family: system-ui, sans-serif; }
+        #app { display: flex; height: 100vh; }
+        #model_3d { flex: 1; }
+        #info {
+            width: 380px; padding: 24px; overflow-y: auto;
+            background: #16213e; border-left: 1px solid #0f3460;
+        }
+        #info h1 { font-size: 20px; margin-bottom: 4px; }
+        #info .sub { color: #888; margin-bottom: 16px; }
+        #info table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        #info td { padding: 4px 0; }
+        #info td:last-child { text-align: right; color: #a0d2ff; }
+        #info .section { font-weight: 600; margin: 12px 0 6px; color: #a0d2ff; }
+        .loading {
+            position: fixed; inset: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            background: #1a1a2e; color: #a0d2ff; font-size: 18px;
+            transition: opacity .4s;
+        }
+        .loading.hidden { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+<div class="loading" id="loading">Loading character…</div>
+<div id="app">
+    <div id="model_3d"></div>
+    <div id="info">
+        <h1 id="char-name">Mag</h1>
+        <div class="sub" id="char-meta">Gnome Mage</div>
+        <div class="section">Equipment</div>
+        <table id="equipment"></table>
+        <div class="section">Character</div>
+        <table id="char-details"></table>
+    </div>
+</div>
+
+<script type="module">
+import { generateModels } from './demo-bundle.js'
+
+window.CONTENT_PATH = 'data/'
+
+const C = {
+    name: 'Mag', race: 7, class: 8, gender: 0, level: 80,
+    skin: 4, face: 1, hairStyle: 2, hairColor: 6, facialStyle: 7,
+    inventory: [
+        [1,64897],[3,63820],[20,64859],[6,109252],[7,64246],
+        [8,63825],[9,63826],[10,63910],[21,63806]
+    ]
+}
+
+const RACES = {1:'Human',2:'Orc',3:'Dwarf',4:'Night Elf',5:'Scourge',6:'Tauren',7:'Gnome',8:'Troll',10:'Blood Elf',11:'Draenei'}
+const CLASSES = {1:'Warrior',2:'Paladin',3:'Hunter',4:'Rogue',5:'Priest',6:'Death Knight',7:'Shaman',8:'Mage',9:'Warlock',11:'Druid'}
+const SLOTS = {1:'Head',3:'Shoulders',20:'Chest (Robe)',6:'Waist',7:'Legs',8:'Feet',9:'Wrists',10:'Hands',21:'Main Hand'}
+const ITEM_NAMES = {
+    64897:'Sanctified Bloodmage Hood',63820:'Shoulders of Mercy Killing',
+    64859:'Sanctified Bloodmage Robe',109252:'Misbegotten Belt',
+    64246:'Sanctified Bloodmage Leggings',63825:"Plague Scientist's Boots",
+    63826:"The Lady's Brittle Bracers",63910:'Sanctified Bloodmage Gloves',
+    63806:'Distant Land'
+}
+
+document.getElementById('char-name').textContent = C.name
+document.getElementById('char-meta').textContent = RACES[C.race] + ' ' + CLASSES[C.class]
+
+const eq = document.getElementById('equipment')
+C.inventory.forEach(([slot, id]) => {
+    eq.innerHTML += `<tr><td>${SLOTS[slot]||'Slot '+slot}</td><td>${ITEM_NAMES[id]||id}</td></tr>`
+})
+
+const det = document.getElementById('char-details')
+;[
+    ['Race', RACES[C.race]], ['Class', CLASSES[C.class]], ['Gender', 'Female'],
+    ['Level', 80], ['Skin', C.skin], ['Face', C.face],
+    ['Hair Style', C.hairStyle], ['Hair Color', C.hairColor], ['Facial Style', C.facialStyle]
+].forEach(([l,v]) => det.innerHTML += `<tr><td>${l}</td><td>${v}</td></tr>`)
+
+const model = await generateModels(1, '#model_3d', {
+    race: C.race, gender: C.gender, skin: C.skin, face: C.face,
+    hairStyle: C.hairStyle, hairColor: C.hairColor, facialStyle: C.facialStyle,
+    items: C.inventory,
+    hideProgressBar: true,
+    onReady: () => document.getElementById('loading').classList.add('hidden')
+})
+</script>
+</body>
+</html>
