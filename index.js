@@ -18,6 +18,7 @@ import { mark, start, end, summary, initNetMonitor, netSummary, monitorDraw } fr
  * @returns {Promise<WowModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model) {
+    if (model.contentPath) window.CONTENT_PATH = model.contentPath
     initNetMonitor()
     mark(`generateModels start`)
     let modelOptions
