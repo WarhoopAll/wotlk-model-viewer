@@ -45,7 +45,7 @@ async function generateModels(aspect, containerSelector, model) {
     }
     const models = {
         type: 2,
-        contentPath: window.CONTENT_PATH,
+        contentPath: model.contentPath || window.CONTENT_PATH,
         // eslint-disable-next-line no-undef
         container: jQuery(containerSelector),
         aspect: aspect,
