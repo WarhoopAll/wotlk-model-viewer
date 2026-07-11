@@ -21,10 +21,13 @@ class WowModelViewer extends ZamModelViewer {
      * @returns {Array.<string>}
      */
     getListAnimations() {
-        if (!this.renderer?.actors?.[0]?.h?.P?.Q) {
-            return []
+        const actor = this.renderer?.models?.[0]
+        if (!actor?.an) return []
+        const names = new Set()
+        for (const anim of actor.an) {
+            if (anim.j) names.add(anim.j)
         }
-        return this.renderer.actors[0].h.P.Q.map(e => e.l)
+        return [...names]
     }
 
     /**
@@ -50,7 +53,7 @@ class WowModelViewer extends ZamModelViewer {
      * @param {string} val
      */
     setAnimation(val) {
-        this.renderer?.actors?.[0]?.setAnimation(val)
+        this.renderer?.models?.[0]?.setAnimation(val)
     }
 
     /**
@@ -61,7 +64,7 @@ class WowModelViewer extends ZamModelViewer {
         if (val === ``) {
             throw new Error(`Empty value not allowed`)
         }
-        this.renderer?.actors?.[0]?.setAnimPaused(val)
+        this.renderer?.models?.[0]?.setAnimPaused(val)
     }
 
     /**
