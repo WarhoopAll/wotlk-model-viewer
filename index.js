@@ -14,7 +14,7 @@ import { mark, start, end, summary, initNetMonitor, netSummary, monitorDraw } fr
  *
  * @param aspect {number}: Size of the character
  * @param containerSelector {string}: jQuery selector on the container
- * @param model {{}|{id: number, type: number}}: A json representation of a character
+ * @param model {{id?: number, type?: number, race?: number, gender?: number, items?: Array, inventory?: Array, hideProgressBar?: boolean, contentPath?: string, onReady?: Function}}: A json representation of a character
  * @returns {Promise<WowModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model) {
