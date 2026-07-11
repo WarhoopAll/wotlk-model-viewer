@@ -8,6 +8,7 @@ import {
 } from "./character_modeling.js"
 
 import "./setup.js"
+import { mark, start, end, summary } from './profile.js'
 
 /**
  *
@@ -18,6 +19,7 @@ import "./setup.js"
  * @returns {Promise<WowModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model, env=`live`) {
+    mark(`generateModels start`)
     let modelOptions
     let fullOptions
     if (model.id && model.type) {
@@ -26,13 +28,16 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
     } else {
         const {race, gender} = model
 
-        // CHARACTER OPTIONS
-        // This is how we describe a character properties
+        start(`findRaceGenderOptions`)
         fullOptions = await findRaceGenderOptions(
             race,
             gender
         )
+        end(`findRaceGenderOptions`)
+
+        start(`optionsFromModel`)
         modelOptions = optionsFromModel(model, fullOptions)
+        end(`optionsFromModel`)
     }
     if(env === `classic`) {
         modelOptions = {
@@ -59,14 +64,33 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
 
     window.WH?.debug(`Creating viewer with options`, models)
 
+    mark(`new WowModelViewer()`)
+    start(`WowModelViewer constructor + loading`)
     // eslint-disable-next-line no-undef
     const wowModelViewer =  await new WowModelViewer(models)
+    end(`WowModelViewer constructor + loading`)
     if(fullOptions) {
         wowModelViewer.currentCharacterOptions = fullOptions
         wowModelViewer.characterGender = model.gender
         wowModelViewer.characterRace = model.race
 
     }
+    mark(`generateModels end`)
+
+    // Track engine download completion
+    const renderer = wowModelViewer.renderer
+    const checkDownloads = () => {
+        const downloads = renderer.downloads || {}
+        const pending = Object.values(downloads).filter(d => d.total > d.loaded)
+        if (pending.length === 0) {
+            window.WH?.debug(`[TIMING] All engine downloads complete`)
+            summary()
+        } else {
+            setTimeout(checkDownloads, 100)
+        }
+    }
+    setTimeout(checkDownloads, 100)
+
     return wowModelViewer
 }
 
