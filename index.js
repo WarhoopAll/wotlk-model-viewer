@@ -60,7 +60,8 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
         // eslint-disable-next-line no-undef
         container: jQuery(containerSelector),
         aspect: aspect,
-        ...modelOptions
+        ...modelOptions,
+        ...(model?.hideProgressBar ? { hideProgressBar: true } : {})
     }
 
     window.WH?.debug(`Creating viewer with options`, models)
