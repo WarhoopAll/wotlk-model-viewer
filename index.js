@@ -69,7 +69,15 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
     start(`WowModelViewer constructor + loading`)
     // eslint-disable-next-line no-undef
     const wowModelViewer =  await new WowModelViewer(models)
-    end(`WowModelViewer constructor + loading`)
+    if (models.hideProgressBar && wowModelViewer.renderer) {
+        const r = wowModelViewer.renderer
+        r.updateProgress = function () {
+            this.progressBg?.hide()
+            this.progressBar?.hide()
+            this.progressShown = !1
+        }
+        r.updateProgress()
+    }
     if(fullOptions) {
         wowModelViewer.currentCharacterOptions = fullOptions
         wowModelViewer.characterGender = model.gender
@@ -103,3 +111,5 @@ export {
     findItemsInEquipments,
     modelingType
 }
+
+export { patchAjax, preload, clear } from './mo3-cache.js'
