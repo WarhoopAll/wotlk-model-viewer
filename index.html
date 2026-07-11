@@ -12,17 +12,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #1a1a2e; color: #eee; font-family: system-ui, sans-serif; }
         #app { display: flex; height: 100vh; }
-        #model_3d { flex: 1; }
+        #model_3d { flex: 1; min-width: 0; }
         #info {
-            width: 380px; padding: 24px; overflow-y: auto;
+            width: 380px; padding: 24px; overflow-y: auto; flex-shrink: 0;
             background: #16213e; border-left: 1px solid #0f3460;
         }
         #info h1 { font-size: 20px; margin-bottom: 4px; }
-        #info .sub { color: #888; margin-bottom: 16px; }
+        #info .sub { color: #888; margin-bottom: 16px; font-size: 13px; }
         #info table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        #info td { padding: 4px 0; }
+        #info td { padding: 3px 0; }
         #info td:last-child { text-align: right; color: #a0d2ff; }
-        #info .section { font-weight: 600; margin: 12px 0 6px; color: #a0d2ff; }
+        .section { font-weight: 600; margin: 14px 0 6px; color: #a0d2ff; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
         .loading {
             position: fixed; inset: 0; z-index: 100;
             display: flex; align-items: center; justify-content: center;
@@ -30,6 +30,20 @@
             transition: opacity .4s;
         }
         .loading.hidden { opacity: 0; pointer-events: none; }
+        .controls { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+        .controls select {
+            flex: 1; padding: 6px 8px; border: 1px solid #0f3460; border-radius: 4px;
+            background: #1a1a2e; color: #eee; font-size: 13px; cursor: pointer;
+        }
+        .controls select:focus { outline: none; border-color: #a0d2ff; }
+        .btn {
+            padding: 6px 12px; border: 1px solid #0f3460; border-radius: 4px;
+            background: #1a1a2e; color: #a0d2ff; font-size: 13px; cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn:hover { background: #0f3460; }
+        .btn.active { background: #0f3460; border-color: #a0d2ff; }
+        .btn-icon { font-size: 16px; line-height: 1; padding: 6px 10px; }
     </style>
 </head>
 <body>
@@ -39,10 +53,26 @@
     <div id="info">
         <h1 id="char-name">Mag</h1>
         <div class="sub" id="char-meta">Gnome Mage</div>
+
+        <div class="section">Animation</div>
+        <div class="controls">
+            <select id="animSelect" disabled></select>
+            <button class="btn btn-icon" id="btnPause" title="Play/Pause">⏸</button>
+        </div>
+
         <div class="section">Equipment</div>
         <table id="equipment"></table>
+
         <div class="section">Character</div>
         <table id="char-details"></table>
+
+        <div class="section">Camera</div>
+        <div class="controls">
+            <button class="btn" id="btnResetCam">Reset</button>
+            <button class="btn" id="btnFront">Front</button>
+            <button class="btn" id="btnSide">Side</button>
+            <button class="btn" id="btnBack">Back</button>
+        </div>
     </div>
 </div>
 
@@ -91,7 +121,50 @@ const model = await generateModels(1, '#model_3d', {
     hairStyle: C.hairStyle, hairColor: C.hairColor, facialStyle: C.facialStyle,
     items: C.inventory,
     hideProgressBar: true,
-    onReady: () => document.getElementById('loading').classList.add('hidden')
+    onReady: () => {
+        document.getElementById('loading').classList.add('hidden')
+        initAnimControls()
+    }
+})
+
+function initAnimControls() {
+    const sel = document.getElementById('animSelect')
+    const list = model.getListAnimations()
+    list.forEach(a => {
+        const opt = document.createElement('option')
+        opt.value = a
+        opt.textContent = a
+        sel.appendChild(opt)
+    })
+    sel.disabled = false
+    sel.addEventListener('change', () => model.setAnimation(sel.value))
+
+    const btnPause = document.getElementById('btnPause')
+    let paused = false
+    btnPause.addEventListener('click', () => {
+        paused = !paused
+        model.setAnimPaused(paused)
+        btnPause.textContent = paused ? '▶' : '⏸'
+        btnPause.classList.toggle('active', paused)
+    })
+}
+
+document.getElementById('btnResetCam').addEventListener('click', () => {
+    model.setAzimuth(0)
+    model.setZenith(Math.PI / 3)
+    model.setDistance(2.5)
+})
+document.getElementById('btnFront').addEventListener('click', () => {
+    model.setAzimuth(0)
+    model.setZenith(Math.PI / 2)
+})
+document.getElementById('btnSide').addEventListener('click', () => {
+    model.setAzimuth(Math.PI / 2)
+    model.setZenith(Math.PI / 2)
+})
+document.getElementById('btnBack').addEventListener('click', () => {
+    model.setAzimuth(Math.PI)
+    model.setZenith(Math.PI / 2)
 })
 </script>
 </body>
