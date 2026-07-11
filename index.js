@@ -79,24 +79,40 @@ async function generateModels(aspect, containerSelector, model) {
 
     // Track engine download completion
     const renderer = wowModelViewer.renderer
+    let hasEntries = false
+    let done = false
+
+    const fireReady = () => {
+        if (done) return
+        done = true
+        clearTimeout(fallbackTimer)
+        //console.log('[MODEL] fireReady - hasEntries:', hasEntries, 'downloads:', Object.keys(renderer.downloads || {}).length)
+        window.WH?.debug(`[TIMING] All engine downloads complete`)
+        summary()
+        setTimeout(() => netSummary(), 500)
+        let frames = 0
+        const waitFrame = () => {
+            if (++frames >= 2) {
+                console.log('[MODEL] calling onReady')
+                model?.onReady?.()
+                return
+            }
+            requestAnimationFrame(waitFrame)
+        }
+        requestAnimationFrame(waitFrame)
+    }
+
+    const fallbackTimer = setTimeout(fireReady, 10000)
     const checkDownloads = () => {
         const downloads = renderer.downloads || {}
         const entries = Object.values(downloads)
+        if (entries.length > 0) {
+            hasEntries = true
+            //console.log('[MODEL] checkDownloads - entries:', entries.length, 'pending:', entries.filter(d => d.total > d.loaded).length)
+        }
         const pending = entries.filter(d => d.total > d.loaded)
-        if (pending.length === 0 && entries.length > 0) {
-            window.WH?.debug(`[TIMING] All engine downloads complete`)
-            summary()
-            setTimeout(() => netSummary(), 500)
-            // Wait 2 frames for first render to complete, then fire onReady
-            let frames = 0
-            const waitFrame = () => {
-                if (++frames >= 2) {
-                    model?.onReady?.()
-                    return
-                }
-                requestAnimationFrame(waitFrame)
-            }
-            requestAnimationFrame(waitFrame)
+        if (pending.length === 0 && hasEntries) {
+            fireReady()
         } else {
             setTimeout(checkDownloads, 100)
         }
