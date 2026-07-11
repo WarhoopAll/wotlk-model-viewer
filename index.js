@@ -81,8 +81,9 @@ async function generateModels(aspect, containerSelector, model) {
     const renderer = wowModelViewer.renderer
     const checkDownloads = () => {
         const downloads = renderer.downloads || {}
-        const pending = Object.values(downloads).filter(d => d.total > d.loaded)
-        if (pending.length === 0) {
+        const entries = Object.values(downloads)
+        const pending = entries.filter(d => d.total > d.loaded)
+        if (pending.length === 0 && entries.length > 0) {
             window.WH?.debug(`[TIMING] All engine downloads complete`)
             summary()
             setTimeout(() => netSummary(), 500)
