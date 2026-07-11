@@ -1,12 +1,12 @@
 import "./setup.js"
 
-const NOT_DISPLAYED_SLOTS = [
+const NOT_DISPLAYED_SLOTS = new Set([
     2, // neck
     11, // finger1
     12, // finger1
     13, // trinket1
     14, // trinket2
-]
+])
 
 const RACES = {
     1: `human`,
@@ -35,7 +35,7 @@ const modelingType = {
     SHOULDER: 4
 }
 
-const characterPart = () => ({
+const characterPart = {
     Face: `face`,
     "Skin Color": `skin`,
     "Hair Style": `hairStyle`,
@@ -67,13 +67,10 @@ const characterPart = () => ({
     "Horn Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `hornColor`,
     Horns: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `horns`,
     "Body Size": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `bodySize`
-})
-
-
-function optionalChaining(choice) {
-    //todo replace by `part.Choices[character[CHARACTER_PART[prop]]]?.Id` when it works on almost all frameworks
-    return choice ? choice.Id : undefined
 }
+
+
+
 
 
 
@@ -93,23 +90,23 @@ function optionalChaining(choice) {
  */
 function getCharacterOptions(character, fullOptions) {
     const options = fullOptions?.Options || []
-    const parts = characterPart()
+    const optionsMap = new Map(options.map(e => [e.Name, e]))
     const missingChoice = []
     const ret = []
 
-    for (const prop in parts) {
-        const part = options.find(e => e.Name === prop)
+    for (const prop in characterPart) {
+        const part = optionsMap.get(prop)
 
         if (!part || !part.Choices || part.Choices.length === 0) {
             continue
         }
 
-        const partKey = parts[prop]
+        const partKey = characterPart[prop]
         let choiceId
 
         if (partKey && character[partKey] !== undefined) {
             const choice = part.Choices?.[character[partKey]]
-            choiceId = optionalChaining(choice)
+            choiceId = choice ? choice.Id : undefined
         }
 
         if (choiceId === undefined) {
@@ -149,7 +146,7 @@ function optionsFromModel(model, fullOptions) {
 
     const retGender = (gender === 1) ? `female` : `male`
     const raceToModelId = RACES[race] + retGender
-    const characterItems = (model.items) ? model.items.filter(e => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.includes(e[0])) : []
+    const characterItems = (model.items) ? model.items.filter(e => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.has(e[0])) : []
     const options = getCharacterOptions(model, fullOptions)
 
     const charCustomization = {
@@ -251,15 +248,13 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
  * @returns {Promise<number[]>}
  */
 async function findItemsInEquipments(equipments, env=`live`) {
-    for (const equipment of equipments) {
-        if (NOT_DISPLAYED_SLOTS.includes(equipment.slot)) {
-            continue
-        }
+    const results = await Promise.all(equipments.map(async (equipment) => {
+        if (NOT_DISPLAYED_SLOTS.has(equipment.slot)) return null
 
         const hasTransmog = equipment.transmog && Object.keys(equipment.transmog).length !== 0
         const displayedItem = hasTransmog ? equipment.transmog : equipment.item
 
-        if (!displayedItem) continue
+        if (!displayedItem) return null
 
         const displaySlot = await getDisplaySlot(
             displayedItem.entry,
@@ -267,17 +262,9 @@ async function findItemsInEquipments(equipments, env=`live`) {
             displayedItem.displayid,
             env
         )
-        equipment.displaySlot = displaySlot.displaySlot
-        equipment.displayId = displaySlot.displayId
-        Object.assign(displaySlot, equipment)
-    }
-    return equipments
-        .filter(e => e.displaySlot)
-        .map(e => [
-                e.displaySlot,
-                e.displayId
-            ]
-        )
+        return [displaySlot.displaySlot, displaySlot.displayId]
+    }))
+    return results.filter(Boolean)
 }
 
 
@@ -287,16 +274,18 @@ async function findItemsInEquipments(equipments, env=`live`) {
  * @param {number} gender
  * @returns {Promise<Object>}
  */
+const _optionsCache = new Map()
+
 async function findRaceGenderOptions(race, gender) {
-    const options = await fetch(`${window.CONTENT_PATH}meta/charactercustomization2/${race}_${gender}.json`)
+    const key = `${race}_${gender}`
+    if (_optionsCache.has(key)) return _optionsCache.get(key)
+    const options = await fetch(`${window.CONTENT_PATH}meta/charactercustomization2/${key}.json`)
         .then(
             (response) => response.json()
         )
-    if (options.data) {
-        return options.data
-    }
-
-    return options
+    const data = options.data || options
+    _optionsCache.set(key, data)
+    return data
 }
 
 export {

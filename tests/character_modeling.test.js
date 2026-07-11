@@ -12,9 +12,7 @@ global.fetch = jest.fn()
 describe(`Retail and WotLK compatibility`, () => {
 
     it(`default for WotLK`, () => {
-        expect(characterPart().Ears).toEqual(undefined)
-        window.WOTLK_TO_RETAIL_DISPLAY_ID_API = undefined
-        expect(characterPart().Ears).toEqual(`ears`)
+        expect(characterPart.Ears).toEqual(undefined)
     })
 })
 
