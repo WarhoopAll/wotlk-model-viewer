@@ -55,8 +55,14 @@
         <div class="sub" id="char-meta">Gnome Mage</div>
 
         <div class="section">Animation</div>
-        <div class="controls">
-            <select id="animSelect" disabled></select>
+        <div class="controls" id="animButtons">
+            <button class="btn" data-anim="Stand">Stand</button>
+            <button class="btn" data-anim="Walk">Walk</button>
+            <button class="btn" data-anim="Run">Run</button>
+            <button class="btn" data-anim="Dance">Dance</button>
+            <button class="btn" data-anim="Kiss">Kiss</button>
+            <button class="btn" data-anim="Sit">Sit</button>
+            <button class="btn" data-anim="Sleep">Sleep</button>
             <button class="btn btn-icon" id="btnPause" title="Play/Pause">⏸</button>
         </div>
 
@@ -128,16 +134,9 @@ const model = await generateModels(1, '#model_3d', {
 })
 
 function initAnimControls() {
-    const sel = document.getElementById('animSelect')
-    const list = model.getListAnimations()
-    list.forEach(a => {
-        const opt = document.createElement('option')
-        opt.value = a
-        opt.textContent = a
-        sel.appendChild(opt)
+    document.querySelectorAll('[data-anim]').forEach(btn => {
+        btn.addEventListener('click', () => model.setAnimation(btn.dataset.anim))
     })
-    sel.disabled = false
-    sel.addEventListener('change', () => model.setAnimation(sel.value))
 
     const btnPause = document.getElementById('btnPause')
     let paused = false
