@@ -168,10 +168,9 @@ function optionsFromModel(model, fullOptions) {
  * @param item{number}: Item id
  * @param slot{number}: Item slot number
  * @param displayId{number}: DisplayId of the item
- * @param env {('classic'|'live')}: select game env
  * @return {Promise<boolean|*>}
  */
-async function getDisplaySlot(item, slot, displayId, env=`live`) {
+async function getDisplaySlot(item, slot, displayId) {
     if (typeof item !== `number`) {
         throw new Error(`item must be a number`)
     }
@@ -185,10 +184,7 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
     }
 
     try {
-        const jsonPath = (env === `classic` && [21, 22].includes(slot)) ?
-            `${window.CONTENT_PATH}meta/item/${displayId}.json` :
-            `${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`
-        await fetch(jsonPath)
+        await fetch(`${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`)
             .then(response => response.json())
 
         return {
@@ -227,10 +223,9 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
  * Returns a 2-dimensional list the inner list contains on first position the item slot, the second the item
  * display-id ex: [[1,1170],[3,4925]]
  * @param {*[{item: {entry: number, displayid: number}, transmog: {entry: number, displayid: number}, slot: number}]} equipments
- * @param env {('classic'|'live')}: select game enve
  * @returns {Promise<number[]>}
  */
-async function findItemsInEquipments(equipments, env=`live`) {
+async function findItemsInEquipments(equipments) {
     const results = await Promise.all(equipments.map(async (equipment) => {
         if (NOT_DISPLAYED_SLOTS.has(equipment.slot)) return null
 
@@ -242,8 +237,7 @@ async function findItemsInEquipments(equipments, env=`live`) {
         const displaySlot = await getDisplaySlot(
             displayedItem.entry,
             equipment.slot,
-            displayedItem.displayid,
-            env
+            displayedItem.displayid
         )
         return [displaySlot.displaySlot, displaySlot.displayId]
     }))

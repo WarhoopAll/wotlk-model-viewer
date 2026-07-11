@@ -15,10 +15,9 @@ import { mark, start, end, summary, initNetMonitor, netSummary, monitorDraw } fr
  * @param aspect {number}: Size of the character
  * @param containerSelector {string}: jQuery selector on the container
  * @param model {{}|{id: number, type: number}}: A json representation of a character
- * @param env {('classic'|'live')}: select game enve
  * @returns {Promise<WowModelViewer>}
  */
-async function generateModels(aspect, containerSelector, model, env=`live`) {
+async function generateModels(aspect, containerSelector, model) {
     initNetMonitor()
     mark(`generateModels start`)
     let modelOptions
@@ -40,19 +39,9 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
         modelOptions = optionsFromModel(model, fullOptions)
         end(`optionsFromModel`)
     }
-    if(env === `classic`) {
-        modelOptions = {
-            dataEnv: `classic`,
-            env: `classic`,
-            gameDataEnv: `classic`,
-            hd: false,
-            ...modelOptions
-        }
-    } else {
-        modelOptions = {
-            hd: true,
-            ...modelOptions
-        }
+    modelOptions = {
+        hd: true,
+        ...modelOptions
     }
     const models = {
         type: 2,

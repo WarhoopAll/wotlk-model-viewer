@@ -59,7 +59,7 @@ declare const characterPart: {
 };
 declare function getCharacterOptions(character: Record<string, any>, fullOptions: { Options?: Array<Record<string, any>> }): Array<{ optionId: any; choiceId: any }>;
 declare function optionsFromModel(model: Record<string, any>, fullOptions: Record<string, any>): { models: { id: string; type: number }; charCustomization?: { options: Array<{ optionId: any; choiceId: any }> }; items: any[] };
-declare function getDisplaySlot(item: number, slot: number, displayId: number, env?: 'classic' | 'live'): Promise<{ displaySlot: number; displayId: number }>;
-declare function findItemsInEquipments(equipments: any[], env?: 'classic' | 'live'): Promise<Array<[number, number]>>;
+declare function getDisplaySlot(item: number, slot: number, displayId: number): Promise<{ displaySlot: number; displayId: number }>;
+declare function findItemsInEquipments(equipments: any[]): Promise<Array<[number, number]>>;
 declare function findRaceGenderOptions(race: number, gender: number): Promise<Record<string, any>>;
 export { optionsFromModel, findRaceGenderOptions, findItemsInEquipments, getDisplaySlot, getCharacterOptions, RACES, characterPart, modelingType };

@@ -9,9 +9,7 @@ interface GenerateModelsOptions {
 declare function generateModels(
     aspect: number,
     containerSelector: string,
-    model: { id: string; type: number } | { id: number; type: number },
-    env?: 'classic' | 'live',
-    options?: GenerateModelsOptions
+    model: ({ id: string; type: number } | { id: number; type: number }) & GenerateModelsOptions
 ): Promise<WowModelViewer>;
 
 declare function patchAjax(): void;
