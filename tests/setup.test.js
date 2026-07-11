@@ -5,7 +5,6 @@ import {WH} from '../setup'
 
 describe(`WH`, () => {
     it(`check consts`, async () => {
-        expect(window.WOTLK_TO_RETAIL_DISPLAY_ID_API).toEqual(`https://wotlk.murlocvillage.com/api/items`)
         expect(window.CONTENT_PATH).toEqual(`/data/`)
     })
 

@@ -9,7 +9,6 @@ describe(`getDisplaySlot`, () => {
 
 
     beforeEach(() => {
-        window.WOTLK_TO_RETAIL_DISPLAY_ID_API=`http://itemtest.com/`
         global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 json: () => Promise.resolve(),
@@ -49,26 +48,12 @@ describe(`getDisplaySlot`, () => {
         const slot = 5
         const displayId = 5666
 
-        // Mock fetch response
-        const mockSuccessResponse = {data: {newDisplayId: 9012}}
-
-        const goodUrl = `http://itemtest.com//${item}/${displayId}`
-
-        jest.spyOn(global, `fetch`).mockImplementation((url) => {
-            if (url === goodUrl) {
-                return Promise.resolve({
-                    json: () => Promise.resolve(mockSuccessResponse),
-                })
-            } else {
-                throw Error(`No good url ${url} !== ${goodUrl}`)
-            }
-        })
+        // Mock fetch to fail, triggering slot remap 5 → 20
+        jest.spyOn(global, `fetch`).mockRejectedValue(new Error(`Not found`))
 
         const result = await getDisplaySlot(item, slot, displayId)
 
-        expect(result).toEqual({displaySlot: 5, displayId: 9012})
-
-        expect(global.fetch).toHaveBeenCalledWith(goodUrl)
+        expect(result).toEqual({displaySlot: 20, displayId: 5666})
     })
 
     it(`should return display slot and display id if no new display id found`, async () => {

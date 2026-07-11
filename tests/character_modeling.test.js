@@ -2,19 +2,11 @@ import {
     optionsFromModel,
     findRaceGenderOptions,
     getCharacterOptions,
-    characterPart
 } from '../character_modeling.js'
 
 // Mock necessary dependencies
 global.fetch = jest.fn()
 
-
-describe(`Retail and WotLK compatibility`, () => {
-
-    it(`default for WotLK`, () => {
-        expect(characterPart.Ears).toEqual(undefined)
-    })
-})
 
 describe(`Character Modeling functions`, () => {
     beforeEach(() => {

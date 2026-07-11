@@ -49,8 +49,8 @@ const characterPart = {
     "Jaw Features": undefined,
     "Face Features": undefined,
     "Skin Type": undefined,
-    Ears: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `ears`,
-    "Fur Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `furColor`,
+    Ears: `ears`,
+    "Fur Color": `furColor`,
     Snout: `snout`,
     Blindfold: undefined,
     Tattoo: undefined,
@@ -61,18 +61,13 @@ const characterPart = {
     Bracelets: undefined,
     Necklace: undefined,
     Earring: undefined,
-    "Primary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `primaryColor`,
-    "Secondary Color Strength": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColorStrength`,
-    "Secondary Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `secondaryColor`,
-    "Horn Color": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `hornColor`,
-    Horns: (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `horns`,
-    "Body Size": (window.WOTLK_TO_RETAIL_DISPLAY_ID_API) ? undefined : `bodySize`
+    "Primary Color": `primaryColor`,
+    "Secondary Color Strength": `secondaryColorStrength`,
+    "Secondary Color": `secondaryColor`,
+    "Horn Color": `hornColor`,
+    Horns:  `horns`,
+    "Body Size": `bodySize`
 }
-
-
-
-
-
 
 /**
  *
@@ -202,18 +197,6 @@ async function getDisplaySlot(item, slot, displayId, env=`live`) {
         }
         // eslint-disable-next-line no-unused-vars
     } catch (e) {
-        if(!window.WOTLK_TO_RETAIL_DISPLAY_ID_API){
-            throw Error(`Item not found and window.WOTLK_TO_RETAIL_DISPLAY_ID_API not set`)
-        }
-        const resp = await fetch(`${window.WOTLK_TO_RETAIL_DISPLAY_ID_API}/${item}/${displayId}`)
-            .then((response) => response.json())
-        const res = resp.data || resp
-        if (res.newDisplayId !== displayId) {
-            return {
-                displaySlot: slot,
-                displayId: res.newDisplayId
-            }
-        }
     }
 
     // old slots to new slots

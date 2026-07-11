@@ -1,30 +1,30 @@
-import "./setup.js";
 declare const RACES: {
-    1: string;
-    2: string;
-    3: string;
-    4: string;
-    5: string;
-    6: string;
-    7: string;
-    8: string;
-    10: string;
-    11: string;
+    1: "human";
+    2: "orc";
+    3: "dwarf";
+    4: "nightelf";
+    5: "scourge";
+    6: "tauren";
+    7: "gnome";
+    8: "troll";
+    10: "bloodelf";
+    11: "draenei";
 };
+
 declare const modelingType: {
-    ARMOR: number;
-    CHARACTER: number;
-    COLLECTION: number;
-    HELM: number;
-    HUMANOIDNPC: number;
-    ITEM: number;
-    ITEMVISUAL: number;
-    NPC: number;
-    OBJECT: number;
-    PATH: number;
-    SHOULDER: number;
+    ARMOR: 128;
+    CHARACTER: 16;
+    COLLECTION: 1024;
+    HELM: 2;
+    HUMANOIDNPC: 32;
+    ITEM: 1;
+    ITEMVISUAL: 512;
+    NPC: 8;
+    OBJECT: 64;
+    PATH: 256;
+    SHOULDER: 4;
 };
-declare const characterPart: () => {
+declare const characterPart: {
     Face: string;
     "Skin Color": string;
     "Hair Style": string;
@@ -57,83 +57,9 @@ declare const characterPart: () => {
     Horns: string | undefined;
     "Body Size": string | undefined;
 };
-/**
- *
- * @param {Object} character - The character object.
- * @param {number} character.face - Description for face.
- * @param {number} character.facialStyle - Description for facialStyle.
- * @param {number} character.gender - Description for gender.
- * @param {number} character.hairColor - Description for hairColor.
- * @param {number} character.hairStyle - Description for hairStyle.
- * @param {Array<Array<number>>} character.items - Description for items. (Optional)
- * @param {number} character.race - Description for race.
- * @param {number} character.skin - Description for skin.
- * @param {Object} fullOptions - Zaming API character options payload.
- * @return {[]}
- */
-declare function getCharacterOptions(character: {
-    face: number;
-    facialStyle: number;
-    gender: number;
-    hairColor: number;
-    hairStyle: number;
-    items: Array<Array<number>>;
-    race: number;
-    skin: number;
-}, fullOptions: Object): [];
-/**
- * This function return the design choices for a character this does not work for NPC / Creature / Items
- * @param {Object} model - The model object to generate options from.
- * @param {{}} fullOptions - The type of the model.
- * @returns {{models: {id: string, type: number}, charCustomization: {options: []}, items: (*|*[])}|{models: {id, type}}}
- */
-declare function optionsFromModel(model: Object, fullOptions: {}): {
-    models: {
-        id: string;
-        type: number;
-    };
-    charCustomization: {
-        options: [];
-    };
-    items: (any | any[]);
-} | {
-    models: {
-        id: any;
-        type: any;
-    };
-};
-/**
- *
- * @param item{number}: Item id
- * @param slot{number}: Item slot number
- * @param displayId{number}: DisplayId of the item
- * @param env {('classic'|'live')}: select game env
- * @return {Promise<boolean|*>}
- */
-declare function getDisplaySlot(item: number, slot: number, displayId: number, env?: ('classic' | 'live')): Promise<boolean | any>;
-/**
- * Returns a 2-dimensional list the inner list contains on first position the item slot, the second the item
- * display-id ex: [[1,1170],[3,4925]]
- * @param {*[{item: {entry: number, displayid: number}, transmog: {entry: number, displayid: number}, slot: number}]} equipments
- * @param env {('classic'|'live')}: select game enve
- * @returns {Promise<number[]>}
- */
-declare function findItemsInEquipments(equipments: any[{
-    item: {
-        entry: number;
-        displayid: number;
-    };
-    transmog: {
-        entry: number;
-        displayid: number;
-    };
-    slot: number;
-}], env?: ('classic' | 'live')): Promise<number[]>;
-/**
- *
- * @param {number} race
- * @param {number} gender
- * @returns {Promise<Object>}
- */
-declare function findRaceGenderOptions(race: number, gender: number): Promise<Object>;
-export { optionsFromModel, findRaceGenderOptions, RACES, findItemsInEquipments, getDisplaySlot, getCharacterOptions, characterPart, modelingType };
+declare function getCharacterOptions(character: Record<string, any>, fullOptions: { Options?: Array<Record<string, any>> }): Array<{ optionId: any; choiceId: any }>;
+declare function optionsFromModel(model: Record<string, any>, fullOptions: Record<string, any>): { models: { id: string; type: number }; charCustomization?: { options: Array<{ optionId: any; choiceId: any }> }; items: any[] };
+declare function getDisplaySlot(item: number, slot: number, displayId: number, env?: 'classic' | 'live'): Promise<{ displaySlot: number; displayId: number }>;
+declare function findItemsInEquipments(equipments: any[], env?: 'classic' | 'live'): Promise<Array<[number, number]>>;
+declare function findRaceGenderOptions(race: number, gender: number): Promise<Record<string, any>>;
+export { optionsFromModel, findRaceGenderOptions, findItemsInEquipments, getDisplaySlot, getCharacterOptions, RACES, characterPart, modelingType };
