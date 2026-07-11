@@ -1,5 +1,6 @@
 const marks = {}
 const timers = {}
+let _observer = null
 
 function mark(name) {
     marks[name] = performance.now()
@@ -24,10 +25,6 @@ function end(name) {
 }
 
 function summary() {
-    const results = []
-    for (const name of Object.keys(timers)) {
-        results.push(`${name}: ${((performance.now() - timers[name])).toFixed(1)}ms`)
-    }
     const entries = Object.entries(marks)
         .sort((a, b) => a[1] - b[1])
         .map(([name, time], i, arr) => {
@@ -37,10 +34,43 @@ function summary() {
         })
     window.WH?.debug(`[TIMING] === PROFILE SUMMARY ===`)
     entries.forEach(e => window.WH?.debug(`[TIMING] ${e}`))
-    if (results.length) {
-        results.forEach(r => window.WH?.debug(`[TIMING] ${r}`))
-    }
     window.WH?.debug(`[TIMING] ====================`)
 }
 
-export { mark, diff, start, end, summary }
+function initNetMonitor() {
+    if (_observer) return
+    if (typeof PerformanceObserver === 'undefined') return
+    _observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+            const url = entry.name.replace(/^.*\/data\//, 'data/')
+            const size = entry.transferSize > 0 ? ` ${Math.round(entry.transferSize / 1024)}KB` : ''
+            window.WH?.debug(`[NET] ${entry.initiatorType}: ${url} = ${entry.duration.toFixed(1)}ms${size}`)
+        }
+    })
+    try {
+        _observer.observe({ type: 'resource', buffered: true })
+        window.WH?.debug(`[TIMING] Network monitor started`)
+    } catch (e) {
+        window.WH?.debug(`[TIMING] Resource Timing API not available`)
+    }
+}
+
+function netSummary() {
+    if (typeof performance.getEntriesByType !== 'function') return
+    const resources = performance.getEntriesByType('resource')
+        .filter(e => e.name.includes('/data/') && e.transferSize > 0)
+        .sort((a, b) => b.duration - a.duration)
+
+    window.WH?.debug(`[NET] === SLOWEST REQUESTS ===`)
+    let totalSize = 0
+    for (const r of resources.slice(0, 20)) {
+        const url = r.name.replace(/^.*\/data\//, 'data/')
+        const size = Math.round(r.transferSize / 1024)
+        totalSize += r.transferSize
+        window.WH?.debug(`[NET] ${url}: ${r.duration.toFixed(1)}ms (${size}KB) [${r.initiatorType}]`)
+    }
+    window.WH?.debug(`[NET] Total: ${resources.length} requests, ${Math.round(totalSize / 1024)}KB`)
+    window.WH?.debug(`[NET] ========================`)
+}
+
+export { mark, diff, start, end, summary, initNetMonitor, netSummary }

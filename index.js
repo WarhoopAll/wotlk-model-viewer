@@ -8,7 +8,7 @@ import {
 } from "./character_modeling.js"
 
 import "./setup.js"
-import { mark, start, end, summary } from './profile.js'
+import { mark, start, end, summary, initNetMonitor, netSummary } from './profile.js'
 
 /**
  *
@@ -19,6 +19,7 @@ import { mark, start, end, summary } from './profile.js'
  * @returns {Promise<WowModelViewer>}
  */
 async function generateModels(aspect, containerSelector, model, env=`live`) {
+    initNetMonitor()
     mark(`generateModels start`)
     let modelOptions
     let fullOptions
@@ -85,6 +86,7 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
         if (pending.length === 0) {
             window.WH?.debug(`[TIMING] All engine downloads complete`)
             summary()
+            setTimeout(() => netSummary(), 500)
         } else {
             setTimeout(checkDownloads, 100)
         }
