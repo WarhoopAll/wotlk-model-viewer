@@ -73,4 +73,20 @@ function netSummary() {
     window.WH?.debug(`[NET] ========================`)
 }
 
-export { mark, diff, start, end, summary, initNetMonitor, netSummary }
+function monitorDraw() {
+    const WebGL = window.ZamModelViewer?.WebGL
+    if (!WebGL || WebGL.prototype.__monitored) return
+    WebGL.prototype.__monitored = true
+    const orig = WebGL.prototype.draw
+    WebGL.prototype.draw = function (t) {
+        const s = performance.now()
+        orig.call(this, t)
+        const elapsed = performance.now() - s
+        if (this.currFrame <= 10 || elapsed > 30) {
+            window.WH?.debug(`[DRAW] frame ${this.currFrame}: ${elapsed.toFixed(1)}ms`)
+        }
+    }
+    window.WH?.debug('[TIMING] draw() monitor installed')
+}
+
+export { mark, diff, start, end, summary, initNetMonitor, netSummary, monitorDraw }

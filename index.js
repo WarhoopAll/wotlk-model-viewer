@@ -8,7 +8,7 @@ import {
 } from "./character_modeling.js"
 
 import "./setup.js"
-import { mark, start, end, summary, initNetMonitor, netSummary } from './profile.js'
+import { mark, start, end, summary, initNetMonitor, netSummary, monitorDraw } from './profile.js'
 
 /**
  *
@@ -70,6 +70,7 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
     start(`WowModelViewer constructor + loading`)
     // eslint-disable-next-line no-undef
     const wowModelViewer =  await new WowModelViewer(models)
+    monitorDraw()
     if (models.hideProgressBar && wowModelViewer.renderer) {
         const r = wowModelViewer.renderer
         r.updateProgress = function () {
@@ -96,6 +97,16 @@ async function generateModels(aspect, containerSelector, model, env=`live`) {
             window.WH?.debug(`[TIMING] All engine downloads complete`)
             summary()
             setTimeout(() => netSummary(), 500)
+            // Wait 2 frames for first render to complete, then fire onReady
+            let frames = 0
+            const waitFrame = () => {
+                if (++frames >= 2) {
+                    model?.onReady?.()
+                    return
+                }
+                requestAnimationFrame(waitFrame)
+            }
+            requestAnimationFrame(waitFrame)
         } else {
             setTimeout(checkDownloads, 100)
         }
