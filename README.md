@@ -57,6 +57,8 @@ generateModels(1, '#model_3d', {
 });
 ```
 
+Demo: [https://warhoopall.github.io/wotlk-model-viewer/](https://warhoopall.github.io/wotlk-model-viewer/)
+
 This project will be maintained.
 
 Available on npm: [wotlk-model-viewer](https://www.npmjs.com/package/wotlk-model-viewer)
