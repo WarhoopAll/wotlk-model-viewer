@@ -25,23 +25,13 @@ window.$ = window.jQuery
 class ZamModelViewer {
     constructor() {
         this.renderer = {
-            actors: [{
-                h: {
-                    P: {
-                        Q: [{
-                            l: `animation1`
-                        }, {
-                            l: `animation2`
-                        }, {
-                            l: `animation3`
-                        }]
-                    },
-                },
-                aq: [],
+            models: [{
+                an: [
+                    { j: `animation1`, b: 0, a: 0 },
+                    { j: `animation2`, b: 0, a: 1 },
+                    { j: `animation3`, b: 0, a: 2 }
+                ],
                 setAnimation: function (val) {
-                    if (!this.aq.find(e => e.l === val)) {
-                        // nothing
-                    }
                 },
                 setAnimPaused: function (val) {
                     if (val === ``) {
@@ -49,7 +39,6 @@ class ZamModelViewer {
                     }
                 }
             }],
-            models: [],
             distance: 100,
             azimuth: 0,
             zenith: 0

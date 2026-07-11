@@ -54,7 +54,7 @@ describe(`WowModelViewer`, () => {
 
     describe(`setAnimPaused`, () => {
         it(`should play/pause the animation`, () => {
-            const spy = jest.spyOn(viewer.renderer.actors[0], `setAnimPaused`)
+            const spy = jest.spyOn(viewer.renderer.models[0], `setAnimPaused`)
             viewer.setAnimPaused(true)
             expect(spy).toHaveBeenCalledWith(true)
             viewer.setAnimPaused(false)
