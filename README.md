@@ -4,6 +4,9 @@ This repository is based on [https://github.com/Miorey/wow-model-viewer/](https:
 
 This project works **only** with classic 3.3.5 and only with our data and our `viewer.min.js`.
 
+Data is available for download here:
+[https://github.com/WarhoopAll/wotlk-model-viewer/releases/tag/data](https://github.com/WarhoopAll/wotlk-model-viewer/releases/tag/data)
+
 You must provide the path to your previously downloaded data:
 
 ```js
