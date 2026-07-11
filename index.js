@@ -93,7 +93,7 @@ async function generateModels(aspect, containerSelector, model) {
         let frames = 0
         const waitFrame = () => {
             if (++frames >= 2) {
-                console.log('[MODEL] calling onReady')
+                //console.log('[MODEL] calling onReady')
                 model?.onReady?.()
                 return
             }
