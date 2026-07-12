@@ -85,7 +85,14 @@ const characterPart = {
  */
 function getCharacterOptions(character, fullOptions) {
     const options = fullOptions?.Options || []
-    const optionsMap = new Map(options.map(e => [e.Name, e]))
+    // Building the options Map is O(n) over all customization choices; cache it
+    // per fullOptions object (WeakMap keys on the object reference) so repeated
+    // appearance changes from UI sliders don't rebuild it every call.
+    let optionsMap = _optionsMapCache.get(fullOptions)
+    if (!optionsMap) {
+        optionsMap = new Map(options.map(e => [e.Name, e]))
+        _optionsMapCache.set(fullOptions, optionsMap)
+    }
     const missingChoice = []
     const ret = []
 
@@ -184,15 +191,24 @@ async function getDisplaySlot(item, slot, displayId) {
     }
 
     try {
-        await fetch(`${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`)
-            .then(response => response.json())
-
+        const resp = await fetch(`${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`)
+        const meta = await resp.json()
+        // If the meta explicitly remaps the slot/display, honour it; otherwise
+        // keep the requested values. Previously the fetched JSON was discarded.
+        // Guard against empty/failed bodies so a missing meta file still falls
+        // through to the legacy slot remap below.
+        if (meta && typeof meta === 'object' && (meta.displaySlot != null || meta.displayId != null)) {
+            return {
+                displaySlot: meta.displaySlot ?? slot,
+                displayId: meta.displayId ?? displayId
+            }
+        }
         return {
             displaySlot: slot,
             displayId: displayId
         }
-        // eslint-disable-next-line no-unused-vars
     } catch (e) {
+        // network/parse error — fall through to slot remap below
     }
 
     // old slots to new slots
@@ -252,6 +268,7 @@ async function findItemsInEquipments(equipments) {
  * @returns {Promise<Object>}
  */
 const _optionsCache = new Map()
+const _optionsMapCache = new WeakMap()
 
 async function findRaceGenderOptions(race, gender) {
     const key = `${race}_${gender}`
@@ -273,5 +290,6 @@ export {
     getDisplaySlot,
     getCharacterOptions,
     characterPart,
-    modelingType
+    modelingType,
+    NOT_DISPLAYED_SLOTS
 }

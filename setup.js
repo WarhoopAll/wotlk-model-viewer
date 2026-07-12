@@ -9,6 +9,9 @@ class WebP {
 
 window.WH ??= {}
 window.WH.debug ??= function () {}
+// Set window.WH.DEBUG = true on the host page BEFORE importing this module to
+// enable profiling instrumentation (profile.js). Off by default — the timers
+// and per-frame draw monitor add measurable overhead otherwise.
 window.WH.defaultAnimation ??= `Stand`
 window.WH.WebP ??= new WebP()
 window.WH.Wow ??= {
