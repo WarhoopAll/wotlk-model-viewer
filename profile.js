@@ -2,7 +2,14 @@ const marks = {}
 const timers = {}
 let _observer = null
 
+// Profiling instrumentation adds measurable overhead (per-frame performance.now
+// pairs in monitorDraw, PerformanceObserver bookkeeping, linear scans over the
+// resource-timeline). Gate all of it behind an explicit debug flag so it is a
+// no-op in production. `window.WH.DEBUG` (set early by the host page) opts in.
+const profilingEnabled = () => !!(window.WH && window.WH.DEBUG)
+
 function mark(name) {
+    if (!profilingEnabled()) return
     marks[name] = performance.now()
     window.WH?.debug(`[TIMING] ${name}`)
 }
@@ -13,10 +20,12 @@ function diff(name) {
 }
 
 function start(name) {
+    if (!profilingEnabled()) return
     timers[name] = performance.now()
 }
 
 function end(name) {
+    if (!profilingEnabled()) return
     if (!timers[name]) return
     const elapsed = (performance.now() - timers[name]).toFixed(1)
     window.WH?.debug(`[TIMING] ${name}: ${elapsed}ms`)
@@ -25,6 +34,7 @@ function end(name) {
 }
 
 function summary() {
+    if (!profilingEnabled()) return
     const entries = Object.entries(marks)
         .sort((a, b) => a[1] - b[1])
         .map(([name, time], i, arr) => {
@@ -39,6 +49,7 @@ function summary() {
 
 function initNetMonitor() {
     if (_observer) return
+    if (!profilingEnabled()) return
     if (typeof PerformanceObserver === 'undefined') return
     _observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
@@ -56,6 +67,7 @@ function initNetMonitor() {
 }
 
 function netSummary() {
+    if (!profilingEnabled()) return
     if (typeof performance.getEntriesByType !== 'function') return
     const resources = performance.getEntriesByType('resource')
         .filter(e => e.name.includes('/data/') && e.transferSize > 0)
@@ -74,6 +86,7 @@ function netSummary() {
 }
 
 function monitorDraw() {
+    if (!profilingEnabled()) return
     const WebGL = window.ZamModelViewer?.WebGL
     if (!WebGL || WebGL.prototype.__monitored) return
     WebGL.prototype.__monitored = true
