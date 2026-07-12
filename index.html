@@ -50,9 +50,7 @@
             flex: 1;
             min-width: 0;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
         }
         .stage::before {
             content: "";
@@ -60,8 +58,13 @@
             inset: 0;
             background: radial-gradient(600px 600px at 50% 45%, rgba(74, 163, 255, 0.08), transparent 70%);
             pointer-events: none;
+            z-index: 0;
         }
-        #model_3d { position: absolute; inset: 0; }
+        /* The engine sets position:relative + an explicit pixel height on this
+           container and appends its <canvas> inside. We just make it fill the
+           stage; the canvas is centered by the engine on the model bounds. */
+        #model_3d { width: 100%; height: 100%; }
+        #model_3d canvas { display: block; }
 
         .stage-badge {
             position: absolute;
@@ -337,15 +340,23 @@ const det = document.getElementById('char-details')
     ['Hair Style', C.hairStyle], ['Hair Color', C.hairColor], ['Facial Style', C.facialStyle]
 ].forEach(([l,v]) => det.insertAdjacentHTML('beforeend', `<tr><td>${l}</td><td>${v}</td></tr>`))
 
-const model = await generateModels(1, '#model_3d', {
+// Match the canvas aspect to the actual viewport so the engine's built-in
+// framing (it centers on the model's bounding-box center) lines up with what
+// we see. A hardcoded aspect of 1 made a square canvas on a landscape stage,
+// which threw the centering off.
+const stage = document.querySelector('.stage')
+const aspect = Math.max(stage.clientWidth / stage.clientHeight, 0.1)
+
+const model = await generateModels(aspect, '#model_3d', {
     race: C.race, gender: C.gender, skin: C.skin, face: C.face,
     hairStyle: C.hairStyle, hairColor: C.hairColor, facialStyle: C.facialStyle,
     items: C.inventory,
     hideProgressBar: true,
     onReady: () => {
         document.getElementById('loading').classList.add('hidden')
-        model.setDistance(22)
-        model.setOffset(0, -2)
+        // No manual setOffset: let the engine keep the model centered on its
+        // own bounding box. setDistance only controls zoom, not centering.
+        model.setDistance(18)
         initAnimControls()
     }
 })
