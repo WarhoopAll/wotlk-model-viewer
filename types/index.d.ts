@@ -1,30 +1,25 @@
 import { WowModelViewer } from './wow_model_viewer.js';
 import { findRaceGenderOptions, getDisplaySlot, findItemsInEquipments, modelingType } from "./character_modeling.js";
-
-interface GenerateModelsOptions {
+import "./setup.js";
+interface ModelOptions {
+    id?: number;
+    type?: number;
+    race?: number;
+    gender?: number;
+    items?: (number | [number, number])[];
+    inventory?: { slot: number; item_instance?: { item_display?: { item_display_info_id?: number } } }[];
     hideProgressBar?: boolean;
+    contentPath?: string;
     onReady?: () => void;
 }
 
-declare function generateModels(
-    aspect: number,
-    containerSelector: string,
-    model: ({ id: string; type: number } | { id: number; type: number }) & GenerateModelsOptions
-): Promise<WowModelViewer>;
-
-declare function patchAjax(): void;
-declare function preload(urls?: string[]): Promise<void>;
-declare function has(url: string): boolean;
-declare function clear(): void;
-
-export {
-    findRaceGenderOptions,
-    generateModels,
-    getDisplaySlot,
-    findItemsInEquipments,
-    modelingType,
-    patchAjax,
-    preload,
-    has,
-    clear,
-};
+/**
+ *
+ * @param aspect {number}: Size of the character
+ * @param containerSelector {string}: jQuery selector on the container
+ * @param model {ModelOptions}: A json representation of a character
+ * @returns {Promise<WowModelViewer>}
+ */
+declare function generateModels(aspect: number, containerSelector: string, model: ModelOptions): Promise<WowModelViewer>;
+export { findRaceGenderOptions, generateModels, getDisplaySlot, findItemsInEquipments, modelingType };
+export { patchAjax, preload, clear } from './mo3-cache.js';

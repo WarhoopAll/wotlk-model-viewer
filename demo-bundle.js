@@ -1,3 +1,186 @@
+var __defProp = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __esm = (fn, res, err) => function __init() {
+  if (err) throw err[0];
+  try {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  } catch (e) {
+    throw err = [e], e;
+  }
+};
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
+// inflate-worker-pool.js
+var inflate_worker_pool_exports = {};
+__export(inflate_worker_pool_exports, {
+  inflateMo3: () => inflateMo3,
+  installInflateHook: () => installInflateHook
+});
+function getUrl() {
+  if (_url) return _url;
+  const blob = new Blob([WORKER_SOURCE], { type: "text/javascript" });
+  _url = URL.createObjectURL(blob);
+  return _url;
+}
+function getPool() {
+  if (_pool) return _pool;
+  if (typeof Worker === "undefined") return null;
+  try {
+    _pool = new InflatePool();
+  } catch (e) {
+    window.WH?.debug(`[INFLATE-WORKER] pool unavailable: ${e}`);
+    _pool = null;
+  }
+  return _pool;
+}
+async function inflateMo3(buffer) {
+  const pool = getPool();
+  if (!pool || !pool.available) return buffer;
+  const t0 = performance.now();
+  const res = await pool.inflate(buffer);
+  const ms = (performance.now() - t0).toFixed(1);
+  if (res.ok) {
+    _preinflated.add(res.buffer);
+    window.WH?.debug(`[INFLATE-WORKER] decompressed off-thread in ${ms}ms`);
+    return res.buffer;
+  }
+  window.WH?.debug(`[INFLATE-WORKER] failed (${res.error}), falling back to engine inflate`);
+  return res.buffer;
+}
+function installInflateHook() {
+  if (window.__inflateHook) return;
+  window.__inflateHook = (buffer) => {
+    if (!_preinflated.has(buffer)) return null;
+    const headerEnd = 29 * 4;
+    return new Uint8Array(buffer, headerEnd);
+  };
+  window.WH?.debug("[INFLATE-WORKER] vendor hook installed");
+}
+var _preinflated, WORKER_SOURCE, _url, _pool, InflatePool;
+var init_inflate_worker_pool = __esm({
+  "inflate-worker-pool.js"() {
+    _preinflated = /* @__PURE__ */ new WeakSet();
+    WORKER_SOURCE = `
+'use strict';
+// pako_inflate ships as an IIFE that sets self.pako; we importScripts it.
+const PAKO_URL = 'https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako_inflate.min.js';
+let _pako = null;
+async function loadPako() {
+    if (_pako) return _pako;
+    if (typeof self.pako !== 'undefined') { _pako = self.pako; return _pako; }
+    await new Promise((resolve, reject) => {
+        try { importScripts(PAKO_URL); resolve(); }
+        catch (e) { reject(e); }
+    });
+    _pako = self.pako;
+    return _pako;
+}
+
+self.onmessage = async (e) => {
+    const { id, buffer } = e.data;
+    try {
+        const view = new DataView(buffer);
+        // Mirror the engine header read (big-endian, no littleEndian arg).
+        // The engine's bT() reads 29 getUint32() calls (magic + version +
+        // 27 fields) before slicing the DEFLATE payload at i.position.
+        const HEADER_UINT32S = 29;
+        const headerEnd = HEADER_UINT32S * 4;
+        if (view.byteLength < headerEnd) throw new Error('buffer too small for mo3 header');
+
+        const pako = await loadPako();
+        const compressed = new Uint8Array(buffer, headerEnd);
+        const inflated = pako.inflate(compressed);
+
+        // Reassemble preserving the ORIGINAL header at byte 0 (the engine
+        // reads it directly via new Rn(t)), followed by the already-inflated
+        // payload in place of the DEFLATE stream.
+        const out = new Uint8Array(headerEnd + inflated.length);
+        out.set(new Uint8Array(buffer, 0, headerEnd), 0);
+        out.set(inflated, headerEnd);
+
+        self.postMessage({ id, ok: true, buffer: out.buffer }, [out.buffer]);
+    } catch (err) {
+        // Return the original buffer untouched on any failure \u2014 the engine
+        // will run its own synchronous inflate as a fallback.
+        self.postMessage({ id, ok: false, error: String(err && err.message || err), buffer }, [buffer]);
+    }
+};
+`;
+    _url = null;
+    _pool = null;
+    InflatePool = class {
+      constructor() {
+        const size = Math.min(Math.max(navigator.hardwareConcurrency || 2, 1), 4);
+        const url = getUrl();
+        this.workers = [];
+        for (let i = 0; i < size; i++) {
+          try {
+            const w = new Worker(url);
+            w._busy = false;
+            w._queue = [];
+            w.onmessage = (e) => this._resolve(w, e.data);
+            w.onerror = (err) => {
+              window.WH?.debug(`[INFLATE-WORKER] error: ${err.message}`);
+              this._rejectAll(w, err);
+            };
+            this.workers.push(w);
+          } catch (e) {
+            window.WH?.debug(`[INFLATE-WORKER] worker init failed: ${e}`);
+          }
+        }
+      }
+      get available() {
+        return this.workers.length > 0;
+      }
+      _resolve(w, data) {
+        const { resolve } = w._current || {};
+        w._current = null;
+        w._busy = false;
+        resolve?.(data);
+        if (w._queue.length) {
+          const next = w._queue.shift();
+          this._dispatch(w, next.buffer, next.resolve, next.reject);
+        }
+      }
+      _rejectAll(w, err) {
+        const { reject } = w._current || {};
+        w._current = null;
+        w._busy = false;
+        reject?.(err);
+        while (w._queue.length) w._queue.shift().reject(err);
+      }
+      _dispatch(w, buffer, resolve, reject) {
+        w._busy = true;
+        w._current = { resolve, reject };
+        w.postMessage({ id: 0, buffer }, [buffer]);
+      }
+      /**
+       * Decompress a .mo3 ArrayBuffer off the main thread.
+       * Resolves with { ok, buffer }: on success buffer is the pre-inflated
+       * archive (with marker); on failure buffer is the original input back and
+       * ok===false, so the caller can fall back to the engine's inflate.
+       *
+       * @param {ArrayBuffer} buffer
+       * @returns {Promise<{ok: boolean, buffer: ArrayBuffer}>}
+       */
+      inflate(buffer) {
+        return new Promise((resolve, reject) => {
+          const free = this.workers.find((w) => !w._busy);
+          const job = { buffer, resolve, reject };
+          if (free) {
+            this._dispatch(free, buffer, resolve, reject);
+          } else {
+            this.workers.sort((a, b) => a._queue.length - b._queue.length)[0]._queue.push(job);
+          }
+        });
+      }
+    };
+  }
+});
+
 // vendor/viewer.min.js
 (() => {
   var t = {
@@ -5257,7 +5440,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         var r2 = i2.getUint32(), n2 = i2.getUint32(), a2 = i2.getUint32(), s2 = i2.getUint32(), o2 = i2.getUint32(), l2 = i2.getUint32(), h2 = i2.getUint32(), u2 = i2.getUint32(), c2 = i2.getUint32(), f2 = i2.getUint32(), d2 = i2.getUint32(), b2 = i2.getUint32(), g2 = i2.getUint32(), _2 = i2.getUint32(), p2 = i2.getUint32(), m2 = i2.getUint32(), v2 = i2.getUint32(), x2 = i2.getUint32(), T2 = i2.getUint32(), w2 = i2.getUint32(), y2 = i2.getUint32(), A2 = i2.getUint32(), E2 = i2.getUint32(), C2 = i2.getUint32(), S2 = i2.getUint32(), M2 = i2.getUint32();
         let k2 = new Uint8Array(t3, i2.position), F2 = null;
         try {
-          F2 = (0, Zr.inflate)(k2);
+          F2 = (window.__inflateHook ? window.__inflateHook(t3) : null) || (0, Zr.inflate)(k2);
         } catch (t4) {
           return void console.log("Decompression error: " + t4);
         }
@@ -5876,56 +6059,51 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
 })();
 
 // setup.js
-if (!window.CONTENT_PATH) {
-  window.CONTENT_PATH = `/data/`;
-}
+window.CONTENT_PATH ??= `/data/`;
 var WebP = class {
   getImageExtension() {
     return `.webp`;
   }
 };
-if (!window.WH) {
-  window.WH = {};
-  window.WH.debug = function(...args) {
-    console.log(args);
-  };
-  window.WH.defaultAnimation = `Stand`;
-  window.WH.WebP = new WebP();
-  window.WH.Wow = {
-    Item: {
-      INVENTORY_TYPE_HEAD: 1,
-      INVENTORY_TYPE_NECK: 2,
-      INVENTORY_TYPE_SHOULDERS: 3,
-      INVENTORY_TYPE_SHIRT: 4,
-      INVENTORY_TYPE_CHEST: 5,
-      INVENTORY_TYPE_WAIST: 6,
-      INVENTORY_TYPE_LEGS: 7,
-      INVENTORY_TYPE_FEET: 8,
-      INVENTORY_TYPE_WRISTS: 9,
-      INVENTORY_TYPE_HANDS: 10,
-      INVENTORY_TYPE_FINGER: 11,
-      INVENTORY_TYPE_TRINKET: 12,
-      INVENTORY_TYPE_ONE_HAND: 13,
-      INVENTORY_TYPE_SHIELD: 14,
-      INVENTORY_TYPE_RANGED: 15,
-      INVENTORY_TYPE_BACK: 16,
-      INVENTORY_TYPE_TWO_HAND: 17,
-      INVENTORY_TYPE_BAG: 18,
-      INVENTORY_TYPE_TABARD: 19,
-      INVENTORY_TYPE_ROBE: 20,
-      INVENTORY_TYPE_MAIN_HAND: 21,
-      INVENTORY_TYPE_OFF_HAND: 22,
-      INVENTORY_TYPE_HELD_IN_OFF_HAND: 23,
-      INVENTORY_TYPE_PROJECTILE: 24,
-      INVENTORY_TYPE_THROWN: 25,
-      INVENTORY_TYPE_RANGED_RIGHT: 26,
-      INVENTORY_TYPE_QUIVER: 27,
-      INVENTORY_TYPE_RELIC: 28,
-      INVENTORY_TYPE_PROFESSION_TOOL: 29,
-      INVENTORY_TYPE_PROFESSION_ACCESSORY: 30
-    }
-  };
-}
+window.WH ??= {};
+window.WH.debug ??= function() {
+};
+window.WH.defaultAnimation ??= `Stand`;
+window.WH.WebP ??= new WebP();
+window.WH.Wow ??= {
+  Item: {
+    INVENTORY_TYPE_HEAD: 1,
+    INVENTORY_TYPE_NECK: 2,
+    INVENTORY_TYPE_SHOULDERS: 3,
+    INVENTORY_TYPE_SHIRT: 4,
+    INVENTORY_TYPE_CHEST: 5,
+    INVENTORY_TYPE_WAIST: 6,
+    INVENTORY_TYPE_LEGS: 7,
+    INVENTORY_TYPE_FEET: 8,
+    INVENTORY_TYPE_WRISTS: 9,
+    INVENTORY_TYPE_HANDS: 10,
+    INVENTORY_TYPE_FINGER: 11,
+    INVENTORY_TYPE_TRINKET: 12,
+    INVENTORY_TYPE_ONE_HAND: 13,
+    INVENTORY_TYPE_SHIELD: 14,
+    INVENTORY_TYPE_RANGED: 15,
+    INVENTORY_TYPE_BACK: 16,
+    INVENTORY_TYPE_TWO_HAND: 17,
+    INVENTORY_TYPE_BAG: 18,
+    INVENTORY_TYPE_TABARD: 19,
+    INVENTORY_TYPE_ROBE: 20,
+    INVENTORY_TYPE_MAIN_HAND: 21,
+    INVENTORY_TYPE_OFF_HAND: 22,
+    INVENTORY_TYPE_HELD_IN_OFF_HAND: 23,
+    INVENTORY_TYPE_PROJECTILE: 24,
+    INVENTORY_TYPE_THROWN: 25,
+    INVENTORY_TYPE_RANGED_RIGHT: 26,
+    INVENTORY_TYPE_QUIVER: 27,
+    INVENTORY_TYPE_RELIC: 28,
+    INVENTORY_TYPE_PROFESSION_TOOL: 29,
+    INVENTORY_TYPE_PROFESSION_ACCESSORY: 30
+  }
+};
 var WH2 = window.WH;
 
 // character_modeling.js
@@ -6001,7 +6179,11 @@ var characterPart = {
 };
 function getCharacterOptions(character, fullOptions) {
   const options = fullOptions?.Options || [];
-  const optionsMap = new Map(options.map((e) => [e.Name, e]));
+  let optionsMap = _optionsMapCache.get(fullOptions);
+  if (!optionsMap) {
+    optionsMap = new Map(options.map((e) => [e.Name, e]));
+    _optionsMapCache.set(fullOptions, optionsMap);
+  }
   const missingChoice = [];
   const ret = [];
   for (const prop in characterPart) {
@@ -6065,7 +6247,14 @@ async function getDisplaySlot(item, slot, displayId) {
     throw new Error(`displayId must be a number`);
   }
   try {
-    await fetch(`${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`).then((response) => response.json());
+    const resp = await fetch(`${window.CONTENT_PATH}meta/armor/${slot}/${displayId}.json`);
+    const meta = await resp.json();
+    if (meta && typeof meta === "object" && (meta.displaySlot != null || meta.displayId != null)) {
+      return {
+        displaySlot: meta.displaySlot ?? slot,
+        displayId: meta.displayId ?? displayId
+      };
+    }
     return {
       displaySlot: slot,
       displayId
@@ -6108,6 +6297,7 @@ async function findItemsInEquipments(equipments) {
   return results.filter(Boolean);
 }
 var _optionsCache = /* @__PURE__ */ new Map();
+var _optionsMapCache = /* @__PURE__ */ new WeakMap();
 async function findRaceGenderOptions(race, gender) {
   const key = `${race}_${gender}`;
   if (_optionsCache.has(key)) return _optionsCache.get(key);
@@ -6258,14 +6448,18 @@ var WowModelViewer = class extends ZamModelViewer {
 var marks = {};
 var timers = {};
 var _observer = null;
+var profilingEnabled = () => !!(window.WH && window.WH.DEBUG);
 function mark(name) {
+  if (!profilingEnabled()) return;
   marks[name] = performance.now();
   window.WH?.debug(`[TIMING] ${name}`);
 }
 function start(name) {
+  if (!profilingEnabled()) return;
   timers[name] = performance.now();
 }
 function end(name) {
+  if (!profilingEnabled()) return;
   if (!timers[name]) return;
   const elapsed = (performance.now() - timers[name]).toFixed(1);
   window.WH?.debug(`[TIMING] ${name}: ${elapsed}ms`);
@@ -6273,6 +6467,7 @@ function end(name) {
   return parseFloat(elapsed);
 }
 function summary() {
+  if (!profilingEnabled()) return;
   const entries = Object.entries(marks).sort((a, b) => a[1] - b[1]).map(([name, time], i, arr) => {
     const fromStart = (time - arr[0][1]).toFixed(1);
     const fromPrev = i > 0 ? (time - arr[i - 1][1]).toFixed(1) : "0.0";
@@ -6284,6 +6479,7 @@ function summary() {
 }
 function initNetMonitor() {
   if (_observer) return;
+  if (!profilingEnabled()) return;
   if (typeof PerformanceObserver === "undefined") return;
   _observer = new PerformanceObserver((list) => {
     for (const entry of list.getEntries()) {
@@ -6300,6 +6496,7 @@ function initNetMonitor() {
   }
 }
 function netSummary() {
+  if (!profilingEnabled()) return;
   if (typeof performance.getEntriesByType !== "function") return;
   const resources = performance.getEntriesByType("resource").filter((e) => e.name.includes("/data/") && e.transferSize > 0).sort((a, b) => b.duration - a.duration);
   window.WH?.debug(`[NET] === SLOWEST REQUESTS ===`);
@@ -6314,6 +6511,7 @@ function netSummary() {
   window.WH?.debug(`[NET] ========================`);
 }
 function monitorDraw() {
+  if (!profilingEnabled()) return;
   const WebGL = window.ZamModelViewer?.WebGL;
   if (!WebGL || WebGL.prototype.__monitored) return;
   WebGL.prototype.__monitored = true;
@@ -6331,33 +6529,68 @@ function monitorDraw() {
 
 // mo3-cache.js
 var _cache = /* @__PURE__ */ new Map();
+var _baseUrl = () => window.CONTENT_PATH || "/data/";
+var _urlFor = (id) => _baseUrl() + "mo3/" + id + ".mo3";
+var _inflateMo3 = null;
+async function decompressOffThread(buffer) {
+  try {
+    if (!_inflateMo3) {
+      const mod = await Promise.resolve().then(() => (init_inflate_worker_pool(), inflate_worker_pool_exports));
+      mod.installInflateHook();
+      _inflateMo3 = mod.inflateMo3;
+    }
+    return await _inflateMo3(buffer);
+  } catch (e) {
+    window.WH?.debug(`[MO3-CACHE] worker inflate unavailable, keeping raw buffer: ${e}`);
+    return buffer;
+  }
+}
 function patchAjax() {
-  if (typeof jQuery === "undefined") return false;
-  if (jQuery._mo3Patched) return true;
-  jQuery._mo3Patched = true;
-  const _orig = jQuery.ajax;
-  jQuery.ajax = function(opts) {
-    if (typeof opts === "string") opts = { url: opts };
-    const url = opts.url || "";
+  if (typeof XMLHttpRequest === "undefined") return false;
+  if (XMLHttpRequest.prototype.__mo3Patched) return true;
+  XMLHttpRequest.prototype.__mo3Patched = true;
+  const origOpen = XMLHttpRequest.prototype.open;
+  const origSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+    this.__mo3Url = url;
+    return origOpen.call(this, method, url, ...rest);
+  };
+  XMLHttpRequest.prototype.send = function(body) {
+    const url = this.__mo3Url || "";
     if (url.includes(".mo3") && _cache.has(url)) {
       const data = _cache.get(url);
       window.WH?.debug(`[MO3-CACHE] HIT: ${url.replace(/^.*\/mo3\//, "mo3/")} (${(data.byteLength / 1024).toFixed(0)}KB)`);
-      queueMicrotask(() => {
-        opts.success?.(data);
-        opts.complete?.(data, "success");
+      const define = (key, value) => Object.defineProperty(this, key, {
+        value,
+        configurable: true,
+        writable: true
       });
-      const xhr = { readyState: 4, status: 200, response: data, responseText: null };
-      return xhr;
+      define("readyState", 4);
+      define("status", 200);
+      define("statusText", "OK");
+      define("response", data);
+      define("responseURL", url);
+      define("responseText", null);
+      const self = this;
+      queueMicrotask(() => {
+        self.onreadystatechange?.();
+        self.onprogress?.({
+          lengthComputable: true,
+          loaded: data.byteLength,
+          total: data.byteLength
+        });
+        self.onload?.();
+      });
+      return;
     }
-    return _orig.apply(this, arguments);
+    return origSend.call(this, body);
   };
-  window.WH?.debug("[MO3-CACHE] $.ajax patched");
+  window.WH?.debug("[MO3-CACHE] XHR patched");
   return true;
 }
 async function preload(ids) {
   patchAjax();
-  const base = window.CONTENT_PATH || "/data/";
-  const toFetch = ids.filter((id) => !_cache.has(base + "mo3/" + id + ".mo3"));
+  const toFetch = ids.filter((id) => !_cache.has(_urlFor(id)));
   if (toFetch.length === 0) {
     window.WH?.debug(`[MO3-CACHE] All ${ids.length} MO3 files already cached`);
     return;
@@ -6365,12 +6598,13 @@ async function preload(ids) {
   window.WH?.debug(`[MO3-CACHE] Preloading ${toFetch.length} MO3 files...`);
   const results = await Promise.allSettled(
     toFetch.map(async (id) => {
-      const url = base + "mo3/" + id + ".mo3";
+      const url = _urlFor(id);
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
-      const buf = await resp.arrayBuffer();
+      const raw = await resp.arrayBuffer();
+      const buf = await decompressOffThread(raw);
       _cache.set(url, buf);
-      return { id, size: buf.byteLength };
+      return { id, size: raw.byteLength };
     })
   );
   const ok = results.filter((r) => r.status === "fulfilled").length;
@@ -6380,14 +6614,88 @@ async function preload(ids) {
     if (r.status === "rejected") window.WH?.debug(`[MO3-CACHE] Failed: ${r.reason}`);
   }
 }
+async function preloadPrioritized(highPriority, lowPriority) {
+  patchAjax();
+  if (lowPriority && lowPriority.length) {
+    preload(lowPriority).catch((e) => window.WH?.debug(`[MO3-CACHE] low-priority failed: ${e}`));
+  }
+  if (highPriority && highPriority.length) {
+    await preload(highPriority);
+  }
+}
 function clear() {
   _cache.clear();
 }
 
+// shader-warmup.js
+var _warmed = false;
+function compileTrivial(gl) {
+  const vsSrc = "attribute vec2 aPos;void main(){gl_Position=vec4(aPos,0.0,1.0);}";
+  const fsSrc = "precision lowp float;void main(){gl_FragColor=vec4(0.0);}";
+  const vs = gl.createShader(gl.VERTEX_SHADER);
+  const fs = gl.createShader(gl.FRAGMENT_SHADER);
+  if (!vs || !fs) return;
+  gl.shaderSource(vs, vsSrc);
+  gl.shaderSource(fs, fsSrc);
+  gl.compileShader(vs);
+  gl.compileShader(fs);
+  const prog = gl.createProgram();
+  if (prog) {
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    gl.deleteProgram(prog);
+  }
+  gl.deleteShader(vs);
+  gl.deleteShader(fs);
+}
+function warmupShaders() {
+  if (_warmed) return;
+  _warmed = true;
+  const run = () => {
+    try {
+      const c = document.createElement("canvas");
+      c.width = c.height = 1;
+      const gl = c.getContext("webgl") || c.getContext("experimental-webgl");
+      if (!gl) return;
+      compileTrivial(gl);
+      const lose = gl.getExtension("WEBGL_lose_context");
+      lose?.loseContext();
+      window.WH?.debug("[SHADER-WARMUP] compiler primed");
+    } catch (e) {
+      window.WH?.debug(`[SHADER-WARMUP] skipped: ${e}`);
+    }
+  };
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(run, { timeout: 1e3 });
+  } else {
+    setTimeout(run, 0);
+  }
+}
+
 // index.js
+function predictMo3Ids(model) {
+  if (model.id && model.type) {
+    return { highPriority: [String(model.id)], lowPriority: [] };
+  }
+  const high = [];
+  if (model.race && RACES[model.race]) {
+    const gender = model.gender === 1 ? "female" : "male";
+    high.push(RACES[model.race] + gender);
+  }
+  const low = (model.items || []).filter((e) => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.has(e[0])).map((e) => String(e[1]));
+  return { highPriority: high, lowPriority: low };
+}
 async function generateModels(aspect, containerSelector, model) {
+  if (model.contentPath) window.CONTENT_PATH = model.contentPath;
   initNetMonitor();
+  warmupShaders();
   mark(`generateModels start`);
+  const { highPriority, lowPriority } = predictMo3Ids(model);
+  if (highPriority.length || lowPriority.length) {
+    start(`mo3 preload (parallel)`);
+    preloadPrioritized(highPriority, lowPriority).finally(() => end(`mo3 preload (parallel)`));
+  }
   let modelOptions;
   let fullOptions;
   if (model.id && model.type) {
@@ -6411,7 +6719,7 @@ async function generateModels(aspect, containerSelector, model) {
   };
   const models = {
     type: 2,
-    contentPath: window.CONTENT_PATH,
+    contentPath: model.contentPath || window.CONTENT_PATH,
     // eslint-disable-next-line no-undef
     container: jQuery(containerSelector),
     aspect,
@@ -6439,27 +6747,46 @@ async function generateModels(aspect, containerSelector, model) {
   }
   mark(`generateModels end`);
   const renderer = wowModelViewer.renderer;
-  const checkDownloads = () => {
-    const downloads = renderer.downloads || {};
-    const pending = Object.values(downloads).filter((d) => d.total > d.loaded);
-    if (pending.length === 0) {
-      window.WH?.debug(`[TIMING] All engine downloads complete`);
-      summary();
-      setTimeout(() => netSummary(), 500);
-      let frames = 0;
-      const waitFrame = () => {
-        if (++frames >= 2) {
-          model?.onReady?.();
-          return;
-        }
-        requestAnimationFrame(waitFrame);
-      };
+  let done = false;
+  let rafId = null;
+  const fireReady = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(fallbackTimer);
+    if (rafId) cancelAnimationFrame(rafId);
+    window.WH?.debug(`[TIMING] All engine downloads complete`);
+    summary();
+    setTimeout(() => netSummary(), 500);
+    let frames = 0;
+    const waitFrame = () => {
+      if (++frames >= 2) {
+        model?.onReady?.();
+        return;
+      }
       requestAnimationFrame(waitFrame);
-    } else {
-      setTimeout(checkDownloads, 100);
-    }
+    };
+    requestAnimationFrame(waitFrame);
   };
-  setTimeout(checkDownloads, 100);
+  const fallbackTimer = setTimeout(fireReady, 1e4);
+  const tick = () => {
+    if (done) return;
+    const downloads = renderer.downloads || {};
+    const entries = Object.values(downloads);
+    if (entries.length === 0) {
+      if (renderer.currFrame && renderer.currFrame > 0) {
+        fireReady();
+        return;
+      }
+    } else {
+      const allDone = entries.every((d) => d.total > 0 && d.loaded >= d.total);
+      if (allDone) {
+        fireReady();
+        return;
+      }
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
   return wowModelViewer;
 }
 export {
@@ -6470,5 +6797,6 @@ export {
   getDisplaySlot,
   modelingType,
   patchAjax,
-  preload
+  preload,
+  preloadPrioritized
 };
