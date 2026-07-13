@@ -4996,6 +4996,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         if (!(this.r <= 0) && this.s && this.s.length) for (let t3 = 0; t3 < this.s.length; t3++) this.ap[this.s[t3]].v = this.t[t3];
       }
       setAnimation(t3) {
+        if (this.aQ || !this.x) return;
         this.an && (this.i && (this.i.setAnimation(t3), t3 = oi[this.i.a.id] ? "StealthStand" : "Mount"), this.bt(t3, this.R), this.x.forEach((e3) => {
           if (e3.i) for (let i2 = 0; i2 < e3.i.length; i2++) e3.i[i2].e.setAnimation(t3);
         }), this.E && this.E.forEach((e3) => e3.e(t3)));
