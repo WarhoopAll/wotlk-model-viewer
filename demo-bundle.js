@@ -1,12 +1,7 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res, err) => function __init() {
-  if (err) throw err[0];
-  try {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-  } catch (e) {
-    throw err = [e], e;
-  }
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -395,14 +390,14 @@ self.onmessage = async (e) => {
       };
     },
     869: (t2) => {
-      var e2 = (function() {
+      var e2 = function() {
         for (var t3, e3 = [], i2 = 0; i2 < 256; i2++) {
           t3 = i2;
           for (var r = 0; r < 8; r++) t3 = 1 & t3 ? 3988292384 ^ t3 >>> 1 : t3 >>> 1;
           e3[i2] = t3;
         }
         return e3;
-      })();
+      }();
       t2.exports = function(t3, i2, r, n) {
         var a = e2, s = n + r;
         t3 ^= -1;
@@ -526,7 +521,7 @@ self.onmessage = async (e) => {
         var l2 = new S();
         return t3.state = l2, l2.strm = t3, l2.wrap = o2, l2.gzhead = null, l2.w_bits = r2, l2.w_size = 1 << l2.w_bits, l2.w_mask = l2.w_size - 1, l2.hash_bits = a2 + 7, l2.hash_size = 1 << l2.hash_bits, l2.hash_mask = l2.hash_size - 1, l2.hash_shift = ~~((l2.hash_bits + 3 - 1) / 3), l2.window = new n.Buf8(2 * l2.w_size), l2.head = new n.Buf16(l2.hash_size), l2.prev = new n.Buf16(l2.w_size), l2.lit_bufsize = 1 << a2 + 6, l2.pending_buf_size = 4 * l2.lit_bufsize, l2.pending_buf = new n.Buf8(l2.pending_buf_size), l2.d_buf = 1 * l2.lit_bufsize, l2.l_buf = 3 * l2.lit_bufsize, l2.level = e3, l2.strategy = s2, l2.method = i3, k(t3);
       }
-      r = [new C(0, 0, 0, 0, (function(t3, e3) {
+      r = [new C(0, 0, 0, 0, function(t3, e3) {
         var i3 = 65535;
         for (i3 > t3.pending_buf_size - 5 && (i3 = t3.pending_buf_size - 5); ; ) {
           if (t3.lookahead <= 1) {
@@ -539,7 +534,7 @@ self.onmessage = async (e) => {
           if (t3.strstart - t3.block_start >= t3.w_size - c && (v(t3, false), 0 === t3.strm.avail_out)) return 1;
         }
         return t3.insert = 0, 4 === e3 ? (v(t3, true), 0 === t3.strm.avail_out ? 3 : 4) : (t3.strstart > t3.block_start && (v(t3, false), t3.strm.avail_out), 1);
-      })), new C(4, 4, 8, 4, A), new C(4, 5, 16, 8, A), new C(4, 6, 32, 32, A), new C(4, 4, 16, 16, E), new C(8, 16, 32, 32, E), new C(8, 16, 128, 128, E), new C(8, 32, 128, 256, E), new C(32, 128, 258, 1024, E), new C(32, 258, 258, 4096, E)], e2.deflateInit = function(t3, e3) {
+      }), new C(4, 4, 8, 4, A), new C(4, 5, 16, 8, A), new C(4, 6, 32, 32, A), new C(4, 4, 16, 16, E), new C(8, 16, 32, 32, E), new C(8, 16, 128, 128, E), new C(8, 32, 128, 256, E), new C(32, 128, 258, 1024, E), new C(32, 258, 258, 4096, E)], e2.deflateInit = function(t3, e3) {
         return F(t3, e3, 8, 15, 8, 0);
       }, e2.deflateInit2 = F, e2.deflateReset = k, e2.deflateResetKeep = M, e2.deflateSetHeader = function(t3, e3) {
         return t3 && t3.state ? 2 !== t3.state.wrap ? h : (t3.state.gzhead = e3, 0) : h;
@@ -583,7 +578,7 @@ self.onmessage = async (e) => {
         } else if (0 === t3.avail_in && _(e3) <= _(i3) && 4 !== e3) return g(t3, -5);
         if (n2.status === b && 0 !== t3.avail_in) return g(t3, -5);
         if (0 !== t3.avail_in || 0 !== n2.lookahead || 0 !== e3 && n2.status !== b) {
-          var w2 = 2 === n2.strategy ? (function(t4, e4) {
+          var w2 = 2 === n2.strategy ? function(t4, e4) {
             for (var i4; ; ) {
               if (0 === t4.lookahead && (y(t4), 0 === t4.lookahead)) {
                 if (0 === e4) return 1;
@@ -592,7 +587,7 @@ self.onmessage = async (e) => {
               if (t4.match_length = 0, i4 = a._tr_tally(t4, 0, t4.window[t4.strstart]), t4.lookahead--, t4.strstart++, i4 && (v(t4, false), 0 === t4.strm.avail_out)) return 1;
             }
             return t4.insert = 0, 4 === e4 ? (v(t4, true), 0 === t4.strm.avail_out ? 3 : 4) : t4.last_lit && (v(t4, false), 0 === t4.strm.avail_out) ? 1 : 2;
-          })(n2, e3) : 3 === n2.strategy ? (function(t4, e4) {
+          }(n2, e3) : 3 === n2.strategy ? function(t4, e4) {
             for (var i4, r2, n3, s3, o2 = t4.window; ; ) {
               if (t4.lookahead <= u) {
                 if (y(t4), t4.lookahead <= u && 0 === e4) return 1;
@@ -607,7 +602,7 @@ self.onmessage = async (e) => {
               if (t4.match_length >= 3 ? (i4 = a._tr_tally(t4, 1, t4.match_length - 3), t4.lookahead -= t4.match_length, t4.strstart += t4.match_length, t4.match_length = 0) : (i4 = a._tr_tally(t4, 0, t4.window[t4.strstart]), t4.lookahead--, t4.strstart++), i4 && (v(t4, false), 0 === t4.strm.avail_out)) return 1;
             }
             return t4.insert = 0, 4 === e4 ? (v(t4, true), 0 === t4.strm.avail_out ? 3 : 4) : t4.last_lit && (v(t4, false), 0 === t4.strm.avail_out) ? 1 : 2;
-          })(n2, e3) : r[n2.level].func(n2, e3);
+          }(n2, e3) : r[n2.level].func(n2, e3);
           if (3 !== w2 && 4 !== w2 || (n2.status = b), 1 === w2 || 3 === w2) return 0 === t3.avail_out && (n2.last_flush = -1), 0;
           if (2 === w2 && (1 === e3 ? a._tr_align(n2) : 5 !== e3 && (a._tr_stored_block(n2, 0, 0, false), 3 === e3 && (p(n2.head), 0 === n2.lookahead && (n2.strstart = 0, n2.block_start = 0, n2.insert = 0))), m(t3), 0 === t3.avail_out)) return n2.last_flush = -1, 0;
         }
@@ -1271,7 +1266,7 @@ self.onmessage = async (e) => {
         do {
           i3 = t3.heap[1], t3.heap[1] = t3.heap[t3.heap_len--], I(t3, a2, 1), r2 = t3.heap[1], t3.heap[--t3.heap_max] = i3, t3.heap[--t3.heap_max] = r2, a2[2 * n2] = a2[2 * i3] + a2[2 * r2], t3.depth[n2] = (t3.depth[i3] >= t3.depth[r2] ? t3.depth[i3] : t3.depth[r2]) + 1, a2[2 * i3 + 1] = a2[2 * r2 + 1] = n2, t3.heap[1] = n2++, I(t3, a2, 1);
         } while (t3.heap_len >= 2);
-        t3.heap[--t3.heap_max] = t3.heap[1], (function(t4, e4) {
+        t3.heap[--t3.heap_max] = t3.heap[1], function(t4, e4) {
           var i4, r3, n3, a3, s3, o3, h3 = e4.dyn_tree, u3 = e4.max_code, c2 = e4.stat_desc.static_tree, f2 = e4.stat_desc.has_stree, d2 = e4.stat_desc.extra_bits, b2 = e4.stat_desc.extra_base, g2 = e4.stat_desc.max_length, _2 = 0;
           for (a3 = 0; a3 <= l; a3++) t4.bl_count[a3] = 0;
           for (h3[2 * t4.heap[t4.heap_max] + 1] = 0, i4 = t4.heap_max + 1; i4 < 573; i4++) (a3 = h3[2 * h3[2 * (r3 = t4.heap[i4]) + 1] + 1] + 1) > g2 && (a3 = g2, _2++), h3[2 * r3 + 1] = a3, r3 > u3 || (t4.bl_count[a3]++, s3 = 0, r3 >= b2 && (s3 = d2[r3 - b2]), o3 = h3[2 * r3], t4.opt_len += o3 * (a3 + s3), f2 && (t4.static_len += o3 * (c2[2 * r3 + 1] + s3)));
@@ -1282,7 +1277,7 @@ self.onmessage = async (e) => {
             } while (_2 > 0);
             for (a3 = g2; 0 !== a3; a3--) for (r3 = t4.bl_count[a3]; 0 !== r3; ) (n3 = t4.heap[--i4]) > u3 || (h3[2 * n3 + 1] !== a3 && (t4.opt_len += (a3 - h3[2 * n3 + 1]) * h3[2 * n3], h3[2 * n3 + 1] = a3), r3--);
           }
-        })(t3, e3), k(a2, u2, t3.bl_count);
+        }(t3, e3), k(a2, u2, t3.bl_count);
       }
       function P(t3, e3, i3) {
         var r2, n2, a2 = -1, s2 = e3[1], o2 = 0, l2 = 7, h2 = 4;
@@ -1301,12 +1296,12 @@ self.onmessage = async (e) => {
       n(T);
       var O = false;
       function N(t3, e3, i3, n2) {
-        C(t3, 0 + (n2 ? 1 : 0), 3), (function(t4, e4, i4, n3) {
+        C(t3, 0 + (n2 ? 1 : 0), 3), function(t4, e4, i4, n3) {
           R(t4), n3 && (E(t4, i4), E(t4, ~i4)), r.arraySet(t4.pending_buf, t4.window, e4, i4, t4.pending), t4.pending += i4;
-        })(t3, e3, i3, true);
+        }(t3, e3, i3, true);
       }
       e2._tr_init = function(t3) {
-        O || (!(function() {
+        O || (!function() {
           var t4, e3, i3, r2, n2, a2 = new Array(16);
           for (i3 = 0, r2 = 0; r2 < 28; r2++) for (p[r2] = i3, t4 = 0; t4 < 1 << h[r2]; t4++) _[i3++] = r2;
           for (_[i3 - 1] = r2, n2 = 0, r2 = 0; r2 < 16; r2++) for (T[r2] = n2, t4 = 0; t4 < 1 << u[r2]; t4++) g[n2++] = r2;
@@ -1318,30 +1313,30 @@ self.onmessage = async (e) => {
           for (; t4 <= 287; ) d[2 * t4 + 1] = 8, t4++, a2[8]++;
           for (k(d, 287, a2), t4 = 0; t4 < o; t4++) b[2 * t4 + 1] = 5, b[2 * t4] = M(t4, 5);
           m = new w(d, h, 257, s, l), v = new w(b, u, 0, o, l), x = new w(new Array(0), c, 0, 19, 7);
-        })(), O = true), t3.l_desc = new y(t3.dyn_ltree, m), t3.d_desc = new y(t3.dyn_dtree, v), t3.bl_desc = new y(t3.bl_tree, x), t3.bi_buf = 0, t3.bi_valid = 0, F(t3);
+        }(), O = true), t3.l_desc = new y(t3.dyn_ltree, m), t3.d_desc = new y(t3.dyn_dtree, v), t3.bl_desc = new y(t3.bl_tree, x), t3.bi_buf = 0, t3.bi_valid = 0, F(t3);
       }, e2._tr_stored_block = N, e2._tr_flush_block = function(t3, e3, i3, r2) {
         var n2, s2, o2 = 0;
-        t3.level > 0 ? (2 === t3.strm.data_type && (t3.strm.data_type = (function(t4) {
+        t3.level > 0 ? (2 === t3.strm.data_type && (t3.strm.data_type = function(t4) {
           var e4, i4 = 4093624447;
           for (e4 = 0; e4 <= 31; e4++, i4 >>>= 1) if (1 & i4 && 0 !== t4.dyn_ltree[2 * e4]) return 0;
           if (0 !== t4.dyn_ltree[18] || 0 !== t4.dyn_ltree[20] || 0 !== t4.dyn_ltree[26]) return 1;
           for (e4 = 32; e4 < a; e4++) if (0 !== t4.dyn_ltree[2 * e4]) return 1;
           return 0;
-        })(t3)), B(t3, t3.l_desc), B(t3, t3.d_desc), o2 = (function(t4) {
+        }(t3)), B(t3, t3.l_desc), B(t3, t3.d_desc), o2 = function(t4) {
           var e4;
           for (P(t4, t4.dyn_ltree, t4.l_desc.max_code), P(t4, t4.dyn_dtree, t4.d_desc.max_code), B(t4, t4.bl_desc), e4 = 18; e4 >= 3 && 0 === t4.bl_tree[2 * f[e4] + 1]; e4--) ;
           return t4.opt_len += 3 * (e4 + 1) + 5 + 5 + 4, e4;
-        })(t3), n2 = t3.opt_len + 3 + 7 >>> 3, (s2 = t3.static_len + 3 + 7 >>> 3) <= n2 && (n2 = s2)) : n2 = s2 = i3 + 5, i3 + 4 <= n2 && -1 !== e3 ? N(t3, e3, i3, r2) : 4 === t3.strategy || s2 === n2 ? (C(t3, 2 + (r2 ? 1 : 0), 3), U(t3, d, b)) : (C(t3, 4 + (r2 ? 1 : 0), 3), (function(t4, e4, i4, r3) {
+        }(t3), n2 = t3.opt_len + 3 + 7 >>> 3, (s2 = t3.static_len + 3 + 7 >>> 3) <= n2 && (n2 = s2)) : n2 = s2 = i3 + 5, i3 + 4 <= n2 && -1 !== e3 ? N(t3, e3, i3, r2) : 4 === t3.strategy || s2 === n2 ? (C(t3, 2 + (r2 ? 1 : 0), 3), U(t3, d, b)) : (C(t3, 4 + (r2 ? 1 : 0), 3), function(t4, e4, i4, r3) {
           var n3;
           for (C(t4, e4 - 257, 5), C(t4, i4 - 1, 5), C(t4, r3 - 4, 4), n3 = 0; n3 < r3; n3++) C(t4, t4.bl_tree[2 * f[n3] + 1], 3);
           z(t4, t4.dyn_ltree, e4 - 1), z(t4, t4.dyn_dtree, i4 - 1);
-        })(t3, t3.l_desc.max_code + 1, t3.d_desc.max_code + 1, o2 + 1), U(t3, t3.dyn_ltree, t3.dyn_dtree)), F(t3), r2 && R(t3);
+        }(t3, t3.l_desc.max_code + 1, t3.d_desc.max_code + 1, o2 + 1), U(t3, t3.dyn_ltree, t3.dyn_dtree)), F(t3), r2 && R(t3);
       }, e2._tr_tally = function(t3, e3, i3) {
         return t3.pending_buf[t3.d_buf + 2 * t3.last_lit] = e3 >>> 8 & 255, t3.pending_buf[t3.d_buf + 2 * t3.last_lit + 1] = 255 & e3, t3.pending_buf[t3.l_buf + t3.last_lit] = 255 & i3, t3.last_lit++, 0 === e3 ? t3.dyn_ltree[2 * i3]++ : (t3.matches++, e3--, t3.dyn_ltree[2 * (_[i3] + a + 1)]++, t3.dyn_dtree[2 * A(e3)]++), t3.last_lit === t3.lit_bufsize - 1;
       }, e2._tr_align = function(t3) {
-        C(t3, 2, 3), S(t3, 256, d), (function(t4) {
+        C(t3, 2, 3), S(t3, 256, d), function(t4) {
           16 === t4.bi_valid ? (E(t4, t4.bi_buf), t4.bi_buf = 0, t4.bi_valid = 0) : t4.bi_valid >= 8 && (t4.pending_buf[t4.pending++] = 255 & t4.bi_buf, t4.bi_buf >>= 8, t4.bi_valid -= 8);
-        })(t3);
+        }(t3);
       };
     },
     292: (t2) => {
@@ -1353,37 +1348,37 @@ self.onmessage = async (e) => {
       var t2, e2;
       window.requestAnimFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(t3, e3) {
         window.setTimeout(t3, 1e3 / 0);
-      }, jQuery.support.cors = true, $.ajaxTransport ? ($.ajaxSetup({ flatOptions: { renderer: true } }), $.ajaxTransport("+binary", (function(t3, e3, i2) {
+      }, jQuery.support.cors = true, $.ajaxTransport ? ($.ajaxSetup({ flatOptions: { renderer: true } }), $.ajaxTransport("+binary", function(t3, e3, i2) {
         if (window.FormData && (t3.dataType && "binary" == t3.dataType || t3.data && (window.ArrayBuffer && t3.data instanceof ArrayBuffer || window.Blob && t3.data instanceof Blob))) return {
           send: function(e4, i3) {
             var r = new XMLHttpRequest(), n = t3.url, a = t3.type, s = t3.responseType || "blob", o = t3.data || null;
-            t3.renderer && r.addEventListener("progress", (function(e5) {
+            t3.renderer && r.addEventListener("progress", function(e5) {
               e5.lengthComputable && (t3.renderer.downloads[this.responseURL] ? t3.renderer.downloads[this.responseURL].loaded = e5.loaded : t3.renderer.downloads[this.responseURL] = {
                 loaded: e5.loaded,
                 total: e5.total
               }, t3.renderer.updateProgress());
-            })), r.addEventListener("load", (function() {
+            }), r.addEventListener("load", function() {
               t3.renderer && (delete t3.renderer.downloads[this.responseURL], t3.renderer.updateProgress());
               var e5 = {};
               e5[t3.dataType] = r.response, i3(r.status, r.statusText, e5, r.getAllResponseHeaders());
-            })), r.open(a, n, true), r.responseType = s, r.send(o);
+            }), r.open(a, n, true), r.responseType = s, r.send(o);
           },
           abort: function() {
             i2.abort();
           }
         };
-      }))) : (t2 = $.httpData, $.httpData = function(e3, i2, r) {
+      })) : (t2 = $.httpData, $.httpData = function(e3, i2, r) {
         return "binary" == i2 ? e3.response : t2(e3, i2, r);
       }, $.ajaxSetup({
         beforeSend: function(t3, e3) {
-          "binary" == e3.dataType && (t3.responseType = e3.responseType || "arraybuffer", t3.addEventListener("progress", (function(t4) {
+          "binary" == e3.dataType && (t3.responseType = e3.responseType || "arraybuffer", t3.addEventListener("progress", function(t4) {
             e3.renderer && t4.lengthComputable && (e3.renderer.downloads[this.responseURL] ? e3.renderer.downloads[this.responseURL].loaded = t4.loaded : e3.renderer.downloads[this.responseURL] = {
               loaded: t4.loaded,
               total: t4.total
             }, e3.renderer.updateProgress());
-          }), false), t3.addEventListener("load", (function() {
+          }, false), t3.addEventListener("load", function() {
             e3.renderer && (delete e3.renderer.downloads[this.responseURL], e3.renderer.updateProgress());
-          }), false));
+          }, false));
         }
       })), Math.randomInt = Math.randomInt || function(t3, e3) {
         return Math.floor(Math.random() * (e3 - t3)) + t3;
@@ -1515,7 +1510,7 @@ self.onmessage = async (e) => {
     }
     function U(t3, e3) {
       const i2 = {};
-      return Object.keys(e3).forEach((function(r2) {
+      return Object.keys(e3).forEach(function(r2) {
         if (!S(r2)) {
           const a2 = e3[r2], s2 = a2.attrib || a2.name || a2.attribName || A.attribPrefix + r2;
           if (a2.value) {
@@ -1529,9 +1524,9 @@ self.onmessage = async (e) => {
               o2 = v(s3), l2 = void 0 !== a2.normalize ? a2.normalize : (n2 = s3) === Int8Array || n2 === Uint8Array, h2 = a2.numComponents || a2.size || R(r2, i3), e4 = t3.createBuffer(), t3.bindBuffer(y, e4), t3.bufferData(y, u2, a2.drawType || 35044);
             } else {
               const i3 = I(a2, r2);
-              e4 = C(t3, i3, void 0, a2.drawType), o2 = m(i3), l2 = void 0 !== a2.normalize ? a2.normalize : (function(t4) {
+              e4 = C(t3, i3, void 0, a2.drawType), o2 = m(i3), l2 = void 0 !== a2.normalize ? a2.normalize : function(t4) {
                 return t4 instanceof Int8Array || t4 instanceof Uint8Array;
-              })(i3), h2 = D(a2, r2);
+              }(i3), h2 = D(a2, r2);
             }
             i2[s2] = {
               buffer: e4,
@@ -1546,7 +1541,7 @@ self.onmessage = async (e) => {
           }
         }
         var n2;
-      })), t3.bindBuffer(y, null), i2;
+      }), t3.bindBuffer(y, null), i2;
     }
     const B = ["position", "positions", "a_position"];
     function P(t3, e3, i2) {
@@ -1556,7 +1551,7 @@ self.onmessage = async (e) => {
       if (a2) {
         const e4 = I(a2, "indices");
         n2.indices = C(t3, e4, 34963), n2.numElements = e4.length, n2.elementType = m(e4);
-      } else n2.numElements || (n2.numElements = (function(t4, e4) {
+      } else n2.numElements || (n2.numElements = function(t4, e4) {
         let i3, r3;
         for (r3 = 0; r3 < B.length && (i3 = B[r3], !(i3 in e4)) && (i3 = A.attribPrefix + i3, !(i3 in e4)); ++r3) ;
         r3 === B.length && (i3 = Object.keys(e4)[0]);
@@ -1568,7 +1563,7 @@ self.onmessage = async (e) => {
         const o2 = a3 / (5120 === (s2 = n3.type) || 5121 === s2 ? 1 : 5122 === s2 || 5123 === s2 ? 2 : 5124 === s2 || 5125 === s2 || 5126 === s2 ? 4 : 0), l2 = n3.numComponents || n3.size, h2 = o2 / l2;
         if (h2 % 1 != 0) throw new Error(`numComponents ${l2} not correct for length ${length}`);
         return h2;
-      })(t3, n2.attribs));
+      }(t3, n2.attribs));
       return n2;
     }
     function z(t3, e3, i2) {
@@ -1577,16 +1572,16 @@ self.onmessage = async (e) => {
     }
     function O(t3, e3) {
       const i2 = {};
-      return Object.keys(e3).forEach((function(r2) {
+      return Object.keys(e3).forEach(function(r2) {
         i2[r2] = z(t3, e3[r2], r2);
-      })), e3.indices ? (i2.numElements = e3.indices.length, i2.elementType = m(I(e3.indices))) : i2.numElements = (function(t4) {
+      }), e3.indices ? (i2.numElements = e3.indices.length, i2.elementType = m(I(e3.indices))) : i2.numElements = function(t4) {
         let e4, i3;
         for (i3 = 0; i3 < B.length && (e4 = B[i3], !(e4 in t4)); ++i3) ;
         i3 === B.length && (e4 = Object.keys(t4)[0]);
         const r2 = t4[e4], n2 = M(r2).length, a2 = D(r2, e4), s2 = n2 / a2;
         if (n2 % a2 > 0) throw new Error(`numComponents ${a2} not correct for length ${n2}`);
         return s2;
-      })(e3), i2;
+      }(e3), i2;
     }
     function N(t3, e3) {
       let i2 = 0;
@@ -1626,10 +1621,10 @@ self.onmessage = async (e) => {
       return H(t3, e3, l), t3;
     }
     function q(t3, e3) {
-      return Object.keys(t3).forEach((function(i2) {
+      return Object.keys(t3).forEach(function(i2) {
         const r2 = t3[i2];
         i2.indexOf("pos") >= 0 ? X(r2, e3) : i2.indexOf("tan") >= 0 || i2.indexOf("binorm") >= 0 ? j(r2, e3) : i2.indexOf("norm") >= 0 && G(r2, e3);
-      })), t3;
+      }), t3;
     }
     function W(t3, e3, i2) {
       return t3 = t3 || 2, {
@@ -1802,10 +1797,10 @@ self.onmessage = async (e) => {
     function lt(t3) {
       return !!t3.texStorage2D;
     }
-    const ht = /* @__PURE__ */ (function() {
+    const ht = /* @__PURE__ */ function() {
       const t3 = {}, e3 = {};
       return function(i2, r2) {
-        return (function(i3) {
+        return function(i3) {
           const r3 = i3.constructor.name;
           if (!t3[r3]) {
             for (const t4 in i3) if ("number" == typeof i3[t4]) {
@@ -1814,12 +1809,12 @@ self.onmessage = async (e) => {
             }
             t3[r3] = true;
           }
-        })(i2), e3[r2] || ("number" == typeof r2 ? `0x${r2.toString(16)}` : r2);
+        }(i2), e3[r2] || ("number" == typeof r2 ? `0x${r2.toString(16)}` : r2);
       };
-    })();
-    new Uint8Array([128, 192, 255, 255]), /* @__PURE__ */ (function() {
+    }();
+    new Uint8Array([128, 192, 255, 255]), /* @__PURE__ */ function() {
       let t3;
-    })();
+    }();
     const ut = 6407, ct = 6408, ft = 33319, dt = 6403, bt = {};
     {
       const t3 = bt;
@@ -1871,14 +1866,14 @@ self.onmessage = async (e) => {
       const a2 = St(0, e3), s2 = new Int32Array(n2);
       for (let t4 = 0; t4 < n2; ++t4) s2[t4] = i2 + t4;
       return lt(t3) ? function(e4) {
-        t3.uniform1iv(r2, s2), e4.forEach((function(e5, r3) {
+        t3.uniform1iv(r2, s2), e4.forEach(function(e5, r3) {
           let n3, o2;
           t3.activeTexture(pt + s2[r3]), w(0, e5) ? (n3 = e5, o2 = null) : (n3 = e5.texture, o2 = e5.sampler), t3.bindSampler(i2, o2), t3.bindTexture(a2, n3);
-        }));
+        });
       } : function(e4) {
-        t3.uniform1iv(r2, s2), e4.forEach((function(e5, i3) {
+        t3.uniform1iv(r2, s2), e4.forEach(function(e5, i3) {
           t3.activeTexture(pt + s2[i3]), t3.bindTexture(a2, e5);
-        }));
+        });
       };
     }
     function Bt(t3, e3) {
@@ -2182,16 +2177,16 @@ self.onmessage = async (e) => {
     }, Nt[35676] = { size: 16, setter: Ot, count: 4 };
     const Lt = /ERROR:\s*\d+:(\d+)/gi;
     function Ht(t3, e3 = "", i2 = 0) {
-      const r2 = [...e3.matchAll(Lt)], n2 = new Map(r2.map(((t4, i3) => {
+      const r2 = [...e3.matchAll(Lt)], n2 = new Map(r2.map((t4, i3) => {
         const n3 = parseInt(t4[1]), a2 = r2[i3 + 1], s2 = a2 ? a2.index : e3.length;
         return [n3 - 1, e3.substring(t4.index, s2)];
-      })));
-      return t3.split("\n").map(((t4, e4) => {
+      }));
+      return t3.split("\n").map((t4, e4) => {
         const r3 = n2.get(e4);
         return `${e4 + 1 + i2}: ${t4}${r3 ? `
 
 ^^^ ${r3}` : ""}`;
-      })).join("\n");
+      }).join("\n");
     }
     const Vt = /^[ \t]*\n/;
     function jt(t3, e3, i2, r2) {
@@ -2216,9 +2211,9 @@ Error compiling ${ht(t3, i2)}: ${r3}`), t3.deleteShader(a2), null;
       const a2 = { errorCallback: i2 || gt, transformFeedbackVaryings: r2, transformFeedbackMode: n2 };
       if (t3) {
         let i3 = {};
-        Array.isArray(t3) ? t3.forEach((function(t4, r3) {
+        Array.isArray(t3) ? t3.forEach(function(t4, r3) {
           i3[t4] = e3 ? e3[r3] : r3;
-        })) : i3 = t3, a2.attribLocations = i3;
+        }) : i3 = t3, a2.attribLocations = i3;
       }
       return a2;
     }
@@ -2227,9 +2222,9 @@ Error compiling ${ht(t3, i2)}: ${r3}`), t3.deleteShader(a2), null;
       return e3.indexOf("frag") >= 0 ? 35632 : e3.indexOf("vert") >= 0 ? 35633 : void 0;
     }
     function Wt(t3, e3) {
-      e3.forEach((function(e4) {
+      e3.forEach(function(e4) {
         t3.deleteShader(e4);
-      }));
+      });
     }
     function Yt(t3, e3, i2, r2, n2) {
       const a2 = Gt(i2, r2, n2), s2 = [], o2 = [];
@@ -2245,20 +2240,20 @@ Error compiling ${ht(t3, i2)}: ${r3}`), t3.deleteShader(a2), null;
       var l2;
       if (s2.length !== e3.length) return a2.errorCallback("not enough shaders for program"), Wt(t3, o2), null;
       const h2 = t3.createProgram();
-      s2.forEach((function(e4) {
+      s2.forEach(function(e4) {
         t3.attachShader(h2, e4);
-      })), a2.attribLocations && Object.keys(a2.attribLocations).forEach((function(e4) {
+      }), a2.attribLocations && Object.keys(a2.attribLocations).forEach(function(e4) {
         t3.bindAttribLocation(h2, a2.attribLocations[e4], e4);
-      }));
+      });
       let u2 = a2.transformFeedbackVaryings;
       u2 && (u2.attribs && (u2 = u2.attribs), Array.isArray(u2) || (u2 = Object.keys(u2)), t3.transformFeedbackVaryings(h2, u2, a2.transformFeedbackMode || 35981)), t3.linkProgram(h2);
       if (!t3.getProgramParameter(h2, 35714)) {
         const e4 = t3.getProgramInfoLog(h2);
-        return a2.errorCallback(`${s2.map(((e5) => {
+        return a2.errorCallback(`${s2.map((e5) => {
           const i3 = Ht(t3.getShaderSource(e5), "", 0), r3 = t3.getShaderParameter(e5, t3.SHADER_TYPE);
           return `${ht(t3, r3)}
 ${i3}}`;
-        })).join("\n")}
+        }).join("\n")}
 Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       }
       return h2;
@@ -2278,7 +2273,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
     }
     const Kt = /(\.|\[|]|\w+)/g;
     function $t(t3, e3, i2, r2) {
-      const n2 = t3.split(Kt).filter(((t4) => "" !== t4));
+      const n2 = t3.split(Kt).filter((t4) => "" !== t4);
       let a2 = 0, s2 = "";
       for (; ; ) {
         const t4 = n2[a2++];
@@ -2291,11 +2286,11 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         }
         {
           const t5 = n2[a2++], e4 = "[" === t5, o3 = i2[h2] || (e4 ? [] : {});
-          i2[h2] = o3, i2 = o3, r2[s2] = r2[s2] || /* @__PURE__ */ (function(t6) {
+          i2[h2] = o3, i2 = o3, r2[s2] = r2[s2] || /* @__PURE__ */ function(t6) {
             return function(e5) {
               ie(t6, e5);
             };
-          })(o3), s2 += t5;
+          }(o3), s2 += t5;
         }
       }
       var o2;
@@ -2341,12 +2336,12 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         const i3 = t3.getActiveUniform(e3, a3);
         r2[a3].name = i3.name;
       }
-      [["UNIFORM_TYPE", "type"], ["UNIFORM_SIZE", "size"], ["UNIFORM_BLOCK_INDEX", "blockNdx"], ["UNIFORM_OFFSET", "offset"]].forEach((function(i3) {
+      [["UNIFORM_TYPE", "type"], ["UNIFORM_SIZE", "size"], ["UNIFORM_BLOCK_INDEX", "blockNdx"], ["UNIFORM_OFFSET", "offset"]].forEach(function(i3) {
         const a3 = i3[0], s3 = i3[1];
-        t3.getActiveUniforms(e3, n2, t3[a3]).forEach((function(t4, e4) {
+        t3.getActiveUniforms(e3, n2, t3[a3]).forEach(function(t4, e4) {
           r2[e4][s3] = t4;
-        }));
-      }));
+        });
+      });
       const a2 = {}, s2 = t3.getProgramParameter(e3, 35382);
       for (let i3 = 0; i3 < s2; ++i3) {
         const r3 = t3.getActiveUniformBlockName(e3, i3), n3 = {
@@ -2396,13 +2391,13 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
     function se(t3, e3, i2, r2, n2) {
       const a2 = Gt(i2, r2, n2);
       let s2 = true;
-      if (e3 = e3.map((function(t4) {
+      if (e3 = e3.map(function(t4) {
         if (t4.indexOf("\n") < 0) {
           const e4 = _t(t4);
           e4 ? t4 = e4.text : (a2.errorCallback("no element with id: " + t4), s2 = false);
         }
         return t4;
-      })), !s2) return null;
+      }), !s2) return null;
       const o2 = Zt(t3, e3, a2);
       return o2 ? ae(t3, o2) : null;
     }
@@ -2793,9 +2788,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       return t3[0] = i2[0] * r2 + i2[4] * n2 + i2[8] * a2 + i2[12] * s2, t3[1] = i2[1] * r2 + i2[5] * n2 + i2[9] * a2 + i2[13] * s2, t3[2] = i2[2] * r2 + i2[6] * n2 + i2[10] * a2 + i2[14] * s2, t3[3] = i2[3] * r2 + i2[7] * n2 + i2[11] * a2 + i2[15] * s2, t3;
     }
     var hr = sr;
-    !(function() {
+    !function() {
       var t3 = Qi();
-    })();
+    }();
     const ur = class {
       constructor(t3) {
         var e3 = this;
@@ -2831,9 +2826,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
     function _r(t3, e3, i2) {
       return t3[0] = e3[0] * i2, t3[1] = e3[1] * i2, t3;
     }
-    !(function() {
+    !function() {
       var t3 = fr();
-    })();
+    }();
     function pr() {
       var t3 = new me(9);
       return me != Float32Array && (t3[1] = 0, t3[2] = 0, t3[3] = 0, t3[5] = 0, t3[6] = 0, t3[7] = 0), t3[0] = 1, t3[4] = 1, t3[8] = 1, t3;
@@ -3452,7 +3447,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           const e4 = o2[t4], i3 = e4.a && e4.a.d;
           l2 = l2 && (null == e4.a || null != i3), i3 && (this.J.b[e4.c] = i3);
         }
-        l2 && !e3.F && (e3.F = true), e3.t.forEach(((t4, i3) => {
+        l2 && !e3.F && (e3.F = true), e3.t.forEach((t4, i3) => {
           if (!e3.o.S && (qe(e3.u[i3]), e3.t[i3])) {
             let t5 = false, r3 = false;
             e3.t[i3].a && e3.t[i3].a.c(n2.a.a) ? (e3.B = e3.t[i3].a.d(n2, e3.o.aX), r3 = true) : Ae(e3.B, 0, 0, 0), e3.t[i3].b && e3.t[i3].b.c(n2.a.a) ? (e3.C = e3.t[i3].b.d(n2, e3.o.aX), t5 = true) : Fr(e3.C, 0, 0, 0, 1);
@@ -3464,12 +3459,12 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             r3 && Ze(e3.u[i3], e3.u[i3], e3.B), Ze(e3.u[i3], e3.u[i3], we(-0.5, -0.5, 0));
           }
           this.J.b["uTextureMatrix" + (i3 + 1).toString()] = e3.u[i3];
-        })), this.J.h = e3.y, this.J.f = !e3.z, this.J.j = r2.TRIANGLES, this.J.l = 2 * e3.p.e, this.J.k = e3.p.f, t3.push(this.J);
+        }), this.J.h = e3.y, this.J.f = !e3.z, this.J.j = r2.TRIANGLES, this.J.l = 2 * e3.p.e, this.J.k = e3.p.f, t3.push(this.J);
       }
       O() {
         let t3 = 0;
         const e3 = [];
-        this.s.forEach(((i3, r2) => {
+        this.s.forEach((i3, r2) => {
           const n2 = r2;
           let a2 = null;
           if (this.s[n2]) if (this.s[0] && 1 == this.s[0].c && r2 > 0) 1 == r2 ? a2 = this.o.aJ && this.o.aJ.b ? { d: this.o.aJ.b } : { d: this.o.aS.blackPixelTexture } : 2 == r2 && (a2 = this.o.aJ && this.o.aJ.c ? { d: this.o.aJ.c } : { d: this.o.aS.blackPixelTexture });
@@ -3484,7 +3479,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             e4 && e4.f && (a2 = e4.f);
           } else this.s[n2].g || WH.debug("can't find texture for material", n2, "type", this.s[n2].c), this.s[n2].g = true;
           e3[n2] = a2, t3++;
-        }));
+        });
         const i2 = {};
         for (let r2 = 0; r2 < t3; r2++) i2["Texture" + (r2 + 1)] = {
           a: e3[r2],
@@ -3511,13 +3506,13 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       constructor(t3, e3, i2) {
         var r2 = this;
         t3.aS.context;
-        0 == i2 && console.log("Texture file is 0"), r2.b = t3, r2.c = t3.k.contentPath + "textures/" + i2 + ".webp", r2.d = null, r2.f = false, (function(t4, e4) {
+        0 == i2 && console.log("Texture file is 0"), r2.b = t3, r2.c = t3.k.contentPath + "textures/" + i2 + ".webp", r2.d = null, r2.f = false, function(t4, e4) {
           t4.a = new Image(), t4.a.crossOrigin = "", t4.a.onload = function() {
             t4.i();
           }, t4.a.onerror = function() {
             t4.a = null;
           }, t4.a.src = t4.c;
-        })(r2);
+        }(r2);
       }
       g() {
         return this.f;
@@ -3709,9 +3704,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         var e3 = this;
         e3.e = t3;
         var i2 = e3.a.k.contentPath + "meta/itemvisual/" + e3.e + ".json";
-        $.getJSON(i2, (function(t4) {
+        $.getJSON(i2, function(t4) {
           e3.i(t4);
-        }));
+        });
       }
       i(t3) {
         var e3 = this;
@@ -3838,12 +3833,12 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         const i2 = this.b;
         i2 != Ti && i2 != wi && i2 != yi && i2 != Ai && i2 != Ei && i2 != Ci && i2 != Si && i2 != Mi && i2 != ki && i2 != Ii && i2 != Ui && i2 != Bi || (e3 = "meta/armor/" + i2 + "/");
         let r2 = t3.a.k.contentPath + e3 + t3.s + ".json";
-        $.getJSON(r2).done((function(e4) {
+        $.getJSON(r2).done(function(e4) {
           t3.z(e4);
-        })).fail((function(e4, i3, r3) {
+        }).fail(function(e4, i3, r3) {
           let n2 = i3 + ", " + r3;
           WH.debug("Error loading item metadata", t3.s, n2), t3.n = true;
-        }));
+        });
       }
       z(t3) {
         if (!this.a) return void WH.debug("Item was destroyed before it was loaded", this.s);
@@ -4013,10 +4008,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         let i2, r2 = e3 * this.b.f(), n2 = this.b.e();
         i2 = n2 < 1 ? n2 > -1 ? Math.trunc(32767 * n2 + 0.5) : -32767 : 32767, t3.d = i2;
         let a2 = this.g(i2);
-        a2 < 1e-3 && (a2 = 1e-3), t3.b = (function(t4, e4) {
+        a2 < 1e-3 && (a2 = 1e-3), t3.b = function(t4, e4) {
           let i3 = Math.abs(t4), r3 = Math.abs(e4);
           return Number((i3 - Math.floor(i3 / r3) * r3).toPrecision(8)) * Math.sign(t4);
-        })(r2, a2), t3.e = 65535 & this.b.d(), Ae(t3.a, this.b.e() * this.a.g * 0.5, this.b.e() * this.a.h * 0.5, 0);
+        }(r2, a2), t3.e = 65535 & this.b.d(), Ae(t3.a, this.b.e() * this.a.g * 0.5, this.b.e() * this.a.h * 0.5, 0);
         let s2 = this.h(), o2 = this.a.f;
         if (o2 < 1e-3) {
           let e4 = this.a.i * this.b.e(), i3 = this.a.j * this.b.e(), r3 = Math.sin(e4), n3 = Math.sin(i3), a3 = Math.cos(e4), o3 = Math.cos(i3);
@@ -4035,10 +4030,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         let i2, r2 = e3 * this.b.f(), n2 = this.b.e();
         i2 = n2 < 1 ? n2 > -1 ? Math.trunc(32767 * n2 + 0.5) : -32767 : 32767, t3.d = i2;
         let a2 = this.g(i2);
-        a2 < 1e-3 && (a2 = 1e-3), t3.b = (function(t4, e4) {
+        a2 < 1e-3 && (a2 = 1e-3), t3.b = function(t4, e4) {
           let i3 = Math.abs(t4), r3 = Math.abs(e4);
           return Number((i3 - Math.floor(i3 / r3) * r3).toPrecision(8)) * Math.sign(t4);
-        })(r2, a2), t3.e = 65535 & this.b.d();
+        }(r2, a2), t3.e = 65535 & this.b.d();
         let s2 = this.a.h - this.a.g, o2 = this.a.g + s2 * this.b.f(), l2 = this.a.i * this.b.e(), h2 = this.a.j * this.b.e(), u2 = Math.cos(l2), c2 = we(u2 * Math.cos(h2), u2 * Math.sin(h2), Math.sin(l2));
         Fe(t3.a, c2, o2);
         let f2 = this.h(), d2 = this.a.f, b2 = we(0.5, 0.5, 0.5);
@@ -4357,10 +4352,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           let a3 = e3.c.a[0];
           if (s2) {
             let r3 = 0, n3 = we(-t3.c[0], -t3.c[1], -t3.c[2]), s3 = De(n3);
-            r3 = s3 <= 23841858e-14 ? 0 : 1 / Math.sqrt(s3), vr(i3, this.i, (function(t4, e4, i4, r4, n4, a4, s4, o3, l3) {
+            r3 = s3 <= 23841858e-14 ? 0 : 1 / Math.sqrt(s3), vr(i3, this.i, function(t4, e4, i4, r4, n4, a4, s4, o3, l3) {
               var h3 = new me(9);
               return h3[0] = t4, h3[1] = e4, h3[2] = i4, h3[3] = r4, h3[4] = n4, h3[5] = a4, h3[6] = s4, h3[7] = o3, h3[8] = l3, h3;
-            })(n3[0] * r3, n3[1] * r3, 0, -n3[1] * r3, n3[0] * r3, 0, 0, 0, 1)), r3 > 23841858e-14 && (a3 = e3.c.a[0] * (1 / Math.sqrt(De(t3.c)) / r3));
+            }(n3[0] * r3, n3[1] * r3, 0, -n3[1] * r3, n3[0] * r3, 0, 0, 0, 1)), r3 > 23841858e-14 && (a3 = e3.c.a[0] * (1 / Math.sqrt(De(t3.c)) / r3));
           }
           if (this.r, Ae(o2, i3[0], i3[1], i3[2]), Fe(o2, o2, a3), Ae(l2, i3[3], i3[4], i3[5]), Fe(l2, l2, e3.c.a[1]), n2 = l2[0], u2 = true, 0 != this.c.M || 0 != this.c.N) {
             let e4 = r2 + n2 * t3.b;
@@ -4368,10 +4363,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             let i4 = ve();
             ye(i4, this.j), this.r;
             let a4 = pr(), s3 = xr();
-            Tr(s3, i4, e4), (function(t4, e5) {
+            Tr(s3, i4, e4), function(t4, e5) {
               var i5 = e5[0], r3 = e5[1], n3 = e5[2], a5 = e5[3], s4 = i5 + i5, o3 = r3 + r3, l3 = n3 + n3, h3 = i5 * s4, u3 = r3 * s4, c3 = r3 * o3, f3 = n3 * s4, d2 = n3 * o3, b2 = n3 * l3, g2 = a5 * s4, _2 = a5 * o3, p2 = a5 * l3;
               t4[0] = 1 - c3 - b2, t4[3] = u3 - p2, t4[6] = f3 + _2, t4[1] = u3 + p2, t4[4] = 1 - h3 - b2, t4[7] = d2 - g2, t4[2] = f3 - _2, t4[5] = d2 + g2, t4[8] = 1 - h3 - c3;
-            })(a4, s3), Ne(o2, o2, a4), Ae(l2, n2, l2[1], l2[2]), Ne(l2, l2, a4);
+            }(a4, s3), Ne(o2, o2, a4), Ae(l2, n2, l2[1], l2[2]), Ne(l2, l2, a4);
           }
         }
         var c2, f2;
@@ -4674,7 +4669,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
     let Hn = null, Vn = null, jn = null;
     class Gn {
       constructor(t3, e3, i2) {
-        this.h = false, this.e = t3, this.f = e3, this.g = i2, (function(t4) {
+        this.h = false, this.e = t3, this.f = e3, this.g = i2, function(t4) {
           Vn = t4.createTexture(), t4.bindTexture(t4.TEXTURE_2D, Vn), t4.texImage2D(t4.TEXTURE_2D, 0, t4.RGBA, 1, 1, 0, t4.RGBA, t4.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0])), t4.bindTexture(t4.TEXTURE_2D, null), jn = t4.createTexture(), t4.bindTexture(t4.TEXTURE_2D, jn), t4.texImage2D(t4.TEXTURE_2D, 0, t4.RGBA, 1, 1, 0, t4.RGBA, t4.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255])), t4.bindTexture(t4.TEXTURE_2D, null), Hn = new Ln();
           let e4 = Hn;
           e4.a = se(t4, [On, "precision mediump float;\r\nvarying vec2 vTextCoords;\r\nuniform sampler2D uDiffuseTexture;\r\nuniform sampler2D uSpecularTexture;\r\nuniform sampler2D uEmissiveTexture;\r\nuniform sampler2D renderResultTexture;\r\nuniform int uBlendMode;\r\nuniform int layer;\r\nuniform vec2 screenResolution;\r\n\r\nfloat overlayBlend(float a, float b) {\r\n    if (b <= 0.5) {\r\n        return 2.0 * a * b;\r\n    } else {\r\n        return 1.0 - ((2.0 * (1.0 - a) * (1.0 - b)));\r\n//        return (1.0 - (1.0 - 2.0 * (a - 0.5)) * (1.0 - b));\r\n    }\r\n}\r\n\r\nfloat alphaStraightBlend(float a, float b, float alpha) {\r\n    return (a * alpha) + (b * (1.0 - alpha));\r\n}\r\n\r\nvoid main() {\r\n    vec4 diffuse = texture2D( uDiffuseTexture, vTextCoords.xy );\r\n    vec4 backGround = texture2D( renderResultTexture, gl_FragCoord.xy / screenResolution );\r\n\r\n    //Blit and Inferior Alpha\r\n    if (uBlendMode == 0 || uBlendMode == 4) {\r\n        if (diffuse.a < 0.001) discard;\r\n\r\n        vec3 finalColor = mix(backGround.rgb, diffuse.rgb, diffuse.a);\r\n\r\n        diffuse  = vec4(finalColor.rgb, 1.0);\r\n    } else\r\n    if (uBlendMode == 1) {\r\n        // Multiply blending //\r\n        if (diffuse.a < 0.001) discard;\r\n\r\n        vec4 multTexture = diffuse;\r\n        vec3 finalColor = (diffuse.rgb * backGround.rgb);\r\n\r\n        diffuse  = vec4(finalColor.rgb, 1.0);\r\n    }  else if (uBlendMode == 2) {\r\n        // Overlay Blending //\r\n        if (diffuse.a < 0.001) discard;\r\n\r\n        vec4 overlayTex = diffuse;\r\n\r\n        vec3 finalColor = vec3(\r\n            overlayBlend(overlayTex.r, backGround.r),\r\n            overlayBlend(overlayTex.g, backGround.g),\r\n            overlayBlend(overlayTex.b, backGround.b)\r\n        );\r\n\r\n        diffuse = vec4(finalColor, 1.0);\r\n//        diffuse  = vec4(finalColor.rgb, overlayTex.a);\r\n    } else if (uBlendMode == 3) {\r\n//        if (diffuse.a > 0.5) discard;\r\n        // Alpha Straight //\r\n        vec4 overlayTex = diffuse;\r\n\r\n        float alphaMult = 1.0;\r\n        vec3 finalColor = vec3(\r\n            alphaStraightBlend(overlayTex.r, backGround.r, alphaMult*overlayTex.a),\r\n            alphaStraightBlend(overlayTex.g, backGround.g, alphaMult*overlayTex.a),\r\n            alphaStraightBlend(overlayTex.b, backGround.b, alphaMult*overlayTex.a)\r\n        );\r\n\r\n        diffuse  = vec4(finalColor.rgb, 1.0);\r\n//        diffuse  = vec4(1.0,1.0,1.0, 1.0-overlayTex.a);\r\n    }\r\n\r\n    gl_FragColor = diffuse;\r\n}"], null, null), e4.b = se(t4, [On, "precision mediump float;\r\n\r\nvarying vec2 vTextCoords;\r\nuniform sampler2D uDiffuseTexture;\r\nuniform sampler2D uSpecularTexture;\r\nuniform sampler2D uEmissiveTexture;\r\nuniform sampler2D renderResultTexture;\r\nuniform int uBlendMode;\r\n\r\nvoid main() {\r\n    vec4 diffuse = texture2D( uDiffuseTexture, vTextCoords.xy );\r\n    vec4 specular = texture2D( uSpecularTexture, vTextCoords.xy );\r\n    if (diffuse.a < 0.001) discard;\r\n    gl_FragColor = vec4(specular.rgb, 1.0);\r\n}"], null, null), e4.c = se(t4, [On, "precision mediump float;\r\n\r\nvarying vec2 vTextCoords;\r\nuniform sampler2D uDiffuseTexture;\r\nuniform sampler2D uSpecularTexture;\r\nuniform sampler2D uEmissiveTexture;\r\nuniform sampler2D renderResultTexture;\r\nuniform vec2 screenResolution;\r\nuniform int uBlendMode;\r\nuniform float emissiveAlphaOverride;\r\nuniform int layer;\r\n\r\nvoid main() {\r\n    vec4 diffuse = texture2D( uDiffuseTexture, vTextCoords.xy );\r\n    vec4 emissive = texture2D( uEmissiveTexture, vTextCoords.xy );\r\n    vec4 backGround = texture2D( renderResultTexture, gl_FragCoord.xy / screenResolution );\r\n\r\n    if (diffuse.a < 0.001) discard;\r\n//    if (emissive.a < 0.001) discard;\r\n\r\n    //TODO: This is a hack from what was obeserved in Nightbourn texture customization with tatoos.\r\n    //TODO: But Maybe switch should be over layer or something else instead of blend\r\n    float alpha = 1.0;\r\n\r\n    if (emissiveAlphaOverride > -1.0) {\r\n        alpha = emissiveAlphaOverride;\r\n    } else if (layer <= 1) {\r\n        alpha = 0.0;\r\n    } else {\r\n        alpha = emissive.a;\r\n    }\r\n\r\n\r\n    gl_FragColor = vec4(emissive.rgb, alpha);\r\n}"], null, null), e4.d = {}, e4.f = t4.createBuffer(), t4.bindBuffer(t4.ARRAY_BUFFER, e4.f), t4.bufferData(t4.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]), t4.STATIC_DRAW), t4.bindBuffer(t4.ARRAY_BUFFER, null), e4.e = t4.createBuffer(), t4.bindBuffer(t4.ELEMENT_ARRAY_BUFFER, e4.e), t4.bufferData(t4.ELEMENT_ARRAY_BUFFER, new Int16Array([0, 1, 2, 1, 3, 2]), t4.STATIC_DRAW), t4.bindBuffer(t4.ELEMENT_ARRAY_BUFFER, null), e4.g = t4.createFramebuffer(), e4.h = {
@@ -4684,7 +4679,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             offset: 0,
             stride: 0
           };
-        })(t3);
+        }(t3);
       }
       i() {
         let t3 = this.e;
@@ -4723,25 +4718,25 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         for (let t4 = 0; t4 < this.a.K.length; t4++) this.a.K[t4] = -1;
         if (this.a.aR) for (let t4 = 0; t4 < this.a.aR.K.length; t4++) this.a.aR.K[t4] = -1;
         for (let e3 = 0; e3 < t3.length; e3++) {
-          let i2 = this.b.Options.find(((i3) => i3.Id == t3[e3].optionId));
+          let i2 = this.b.Options.find((i3) => i3.Id == t3[e3].optionId);
           if (WH.debug("option", i2), i2) {
-            let r2 = i2.Choices.find(((i3) => i3.Id == t3[e3].choiceId));
+            let r2 = i2.Choices.find((i3) => i3.Id == t3[e3].choiceId);
             if (WH.debug("choice", r2), r2) {
-              let e4 = r2.Elements.filter(((e5) => e5.BoneSet && e5.BoneSet.BoneFileDataID && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID)))));
+              let e4 = r2.Elements.filter((e5) => e5.BoneSet && e5.BoneSet.BoneFileDataID && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID)));
               e4.length > 0 && this.a.bu(e4[0].BoneSet.BoneFileDataID);
-              let n2 = r2.Elements.filter(((e5) => e5.Material && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID)))));
-              n2.sort(((t4, e5) => e5.VariationChoiceID - t4.VariationChoiceID)), n2.forEach(((t4) => {
+              let n2 = r2.Elements.filter((e5) => e5.Material && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID)));
+              n2.sort((t4, e5) => e5.VariationChoiceID - t4.VariationChoiceID), n2.forEach((t4) => {
                 WH.debug("element material", t4);
                 let e5 = this.d(t4.Material.MaterialResourcesID);
                 if (!e5) return void WH.debug("element material: can't get texture files for material", t4);
-                let i3 = this.b.TextureLayers.find(((e6) => e6.ChrModelTextureTargetID == t4.Material.TextureTarget));
+                let i3 = this.b.TextureLayers.find((e6) => e6.ChrModelTextureTargetID == t4.Material.TextureTarget);
                 i3 ? 1 == i3.TextureType ? t4.Material.TextureTarget == Li ? this.a.C[1][0] = this.a.bA(1, e5) : this.a.D[t4.Material.TextureTarget] || (this.a.D[t4.Material.TextureTarget] = this.a.bA(i3.TextureSection, e5)) : 6 == i3.TextureType ? this.a.C[6][0] = this.a.bA(6, e5) : 7 == i3.TextureType ? this.a.C[7][0] = this.a.bA(7, e5) : 8 == i3.TextureType ? this.a.C[8][0] = this.a.bA(8, e5) : 10 == i3.TextureType ? this.a.C[10][0] = this.a.bA(10, e5) : 19 == i3.TextureType ? this.a.C[19][0] = this.a.bA(19, e5) : 20 == i3.TextureType ? this.a.C[20][0] = this.a.bA(20, e5) : 21 == i3.TextureType ? this.a.C[21][0] = this.a.bA(21, e5) : 22 == i3.TextureType ? this.a.C[22][0] = this.a.bA(22, e5) : WH.debug("unhandled texture type", i3.TextureType, "target", t4.Material.TextureTarget) : WH.debug("element material: can't get texture layer for material", t4);
-              })), r2.Elements.filter(((e5) => e5.Geoset && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID))))).forEach(((t4) => {
+              }), r2.Elements.filter((e5) => e5.Geoset && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID))).forEach((t4) => {
                 WH.debug("element geoset", t4), this.a.bD(t4.Geoset);
-              })), r2.Elements.filter(((e5) => e5.SkinnedModel && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID))))).forEach(((t4) => {
+              }), r2.Elements.filter((e5) => e5.SkinnedModel && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID))).forEach((t4) => {
                 WH.debug("element skinnedmodel", t4), this.a.aR && this.a.aR.bD(t4.SkinnedModel);
-              }));
-              let a2 = r2.Elements.find(((e5) => 0 != e5.CondModelFileDataId && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID)))));
+              });
+              let a2 = r2.Elements.find((e5) => 0 != e5.CondModelFileDataId && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID)));
               if (24 == i2.Id || 353 == i2.Id) {
                 if (a2 && !this.a.c) {
                   WH.debug("element condModel", a2);
@@ -4760,18 +4755,18 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
                   }
                 }
               }
-              r2.Elements.filter(((e5) => e5.ChrCustItemGeoModifyID && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID))))).forEach(((t4) => {
+              r2.Elements.filter((e5) => e5.ChrCustItemGeoModifyID && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID))).forEach((t4) => {
                 WH.debug("element ChrCustItemGeoModify", t4), this.a && this.a.M.push(t4.ChrCustItemGeoModifyID);
-              }));
+              });
             }
           }
         }
         if (!this.a.C[6][0]) {
-          let e3 = this.b.Options.find(((t4) => t4.Id == this.b.HairStyleOptionId));
+          let e3 = this.b.Options.find((t4) => t4.Id == this.b.HairStyleOptionId);
           if (e3) {
             let i2 = e3.Choices[1];
             if (i2) {
-              let e4 = i2.Elements.filter(((e5) => e5.Material && e5.Material.TextureTarget == Hi && (0 == e5.VariationChoiceID || t3.some(((t4) => t4.choiceId == e5.VariationChoiceID)))));
+              let e4 = i2.Elements.filter((e5) => e5.Material && e5.Material.TextureTarget == Hi && (0 == e5.VariationChoiceID || t3.some((t4) => t4.choiceId == e5.VariationChoiceID)));
               if (e4.length > 0) {
                 let t4 = this.d(e4[0].Material.MaterialResourcesID);
                 t4 && (this.a.C[6][0] = this.a.bA(6, t4));
@@ -4793,7 +4788,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       }
       g(t3) {
         let e3 = { options: t3, sheathMain: -1, sheathOff: -1 };
-        for (let t4 of this.b.Options) e3.options.some(((e4) => e4.optionId == t4.Id)) || e3.options.push({
+        for (let t4 of this.b.Options) e3.options.some((e4) => e4.optionId == t4.Id) || e3.options.push({
           optionId: t4.Id,
           choiceId: t4.Choices[0].Id
         });
@@ -4833,9 +4828,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         if (this.aQ = true, this.d = false, t3.aK && t3.aK.d(), t3.C) for (let e3 = 0; e3 < t3.C.length; ++e3) for (const i2 in t3.C[e3]) t3.C[e3][i2].d();
         if (t3.B) for (const e3 in t3.B) t3.B[e3].h();
         if (t3.al && (t3.al = null), t3.ao && (t3.ao = null), t3.aq && (t3.aq = null), t3.ar && (t3.ar = null), t3.au && (t3.au = null), t3.ax && (t3.ax = null), t3.az && (t3.az = null), t3.aA && (t3.aA = null), t3.aC && (t3.aC = null), t3.aF && (t3.aF = null), t3.av) for (let e3 = 0; e3 < t3.av.length; ++e3) t3.av[e3] = null;
-        t3.av = null, this.bZ("vertices"), this.bZ("animations"), this.bZ("bones"), this.bZ("meshes"), this.bZ("texUnits"), this.bZ("materials"), this.bZ("textureAnims"), this.bZ("attachments"), this.bZ("colors"), this.bZ("alphas"), this.bZ("particleEmitters"), this.bZ("ribbonEmitters"), this.bZ("skins"), this.bZ("faces"), this.bZ("hairs"), this.an = null, t3.x && t3.x.forEach(((e3, i2) => {
+        t3.av = null, this.bZ("vertices"), this.bZ("animations"), this.bZ("bones"), this.bZ("meshes"), this.bZ("texUnits"), this.bZ("materials"), this.bZ("textureAnims"), this.bZ("attachments"), this.bZ("colors"), this.bZ("alphas"), this.bZ("particleEmitters"), this.bZ("ribbonEmitters"), this.bZ("skins"), this.bZ("faces"), this.bZ("hairs"), this.an = null, t3.x && t3.x.forEach((e3, i2) => {
           e3.x(), t3.x.set(i2, null);
-        })), t3.i && t3.i.ba(), t3.i = null, t3.j && t3.j.ba(), t3.j = null, t3.aR && t3.aR.ba(), t3.aR = null, t3.a = null, t3.x = null, t3.B = null, t3.C = null, t3.J = null, t3.U = null, t3.W = null, t3.X = null, t3.Y = null, t3.Z = null, t3.aa = null, t3.ab = null, t3.ae = null, t3.af = null, t3.ag = null, t3.boundsSize = null, t3.aM = null, t3.aN = null, t3.aO = null, t3.aP = null;
+        }), t3.i && t3.i.ba(), t3.i = null, t3.j && t3.j.ba(), t3.j = null, t3.aR && t3.aR.ba(), t3.aR = null, t3.a = null, t3.x = null, t3.B = null, t3.C = null, t3.J = null, t3.U = null, t3.W = null, t3.X = null, t3.Y = null, t3.Z = null, t3.aa = null, t3.ab = null, t3.ae = null, t3.af = null, t3.ag = null, t3.boundsSize = null, t3.aM = null, t3.aN = null, t3.aO = null, t3.aP = null;
       }
       getNumAnimations() {
         const t3 = this.i ? this.i : this;
@@ -4850,7 +4845,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       }
       setAnimPaused(t3) {
         var e3;
-        this.S = t3, null === (e3 = this.i) || void 0 === e3 || e3.setAnimPaused(t3), this.E.forEach(((e4) => e4.f(t3)));
+        this.S = t3, null === (e3 = this.i) || void 0 === e3 || e3.setAnimPaused(t3), this.E.forEach((e4) => e4.f(t3));
       }
       setAnimNoSubAnim(t3) {
         this.T = t3;
@@ -4863,19 +4858,19 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         WH.debug("setItems", t3);
         const e3 = [];
         for (let i2 = 0; i2 < t3.length; i2++) e3.push([t3[i2].slot, t3[i2].display, t3[i2].visual]);
-        e3.forEach(((t4) => {
+        e3.forEach((t4) => {
           const e4 = [parseInt(t4[0]), parseInt(t4[1])];
           this.k.items.push(e4);
-        })), this.bK(e3), this.w = true;
+        }), this.bK(e3), this.w = true;
       }
       attachList(t3) {
         WH.debug("attachList", t3);
         const e3 = t3.split(","), i2 = [];
         for (let t4 = 0; t4 < e3.length; t4 += 2) i2.push([e3[t4], e3[t4 + 1]]);
-        i2.forEach(((t4) => {
+        i2.forEach((t4) => {
           const e4 = [parseInt(t4[0]), parseInt(t4[1])];
           this.k.items.push(e4);
-        })), this.bK(i2), this.w = true;
+        }), this.bK(i2), this.w = true;
       }
       clearSlots(t3) {
         WH.debug("clearSlots", t3);
@@ -4883,9 +4878,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         for (let t4 = 0; t4 < e3.length; ++t4) {
           this.bM(parseInt(e3[t4]));
           const i2 = [];
-          this.k.items.forEach(((e4) => {
+          this.k.items.forEach((e4) => {
             0 != this.k.items[t4].indexOf(parseInt(e4)) && i2.push(e4);
-          })), this.k.items = i2;
+          }), this.k.items = i2;
         }
         this.bJ(), this.w = true;
       }
@@ -4925,14 +4920,14 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         return this.i ? this.i.d && this.d : this.d;
       }
       setParticlesEnabled(t3) {
-        this.f = t3, this.x.forEach((function(e3) {
+        this.f = t3, this.x.forEach(function(e3) {
           if (e3.i) {
             for (let i2 = 0; i2 < e3.i.length; ++i2) if (e3.i[i2] && (e3.i[i2].e.setParticlesEnabled(t3), e3.r[i2] && e3.r[i2].b)) {
               const r2 = e3.i[i2].e;
               for (let n2 = 0; n2 < e3.r[i2].b.length; n2++) r2.aB && r2.aB[n2] && e3.r[i2].b[n2] && e3.r[i2].b[n2].e.setParticlesEnabled(t3);
             }
           }
-        }));
+        });
       }
       setRibbonsEnabled(t3) {
         this.g = t3;
@@ -5001,9 +4996,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         if (!(this.r <= 0) && this.s && this.s.length) for (let t3 = 0; t3 < this.s.length; t3++) this.ap[this.s[t3]].v = this.t[t3];
       }
       setAnimation(t3) {
-        this.an && (this.i && (this.i.setAnimation(t3), t3 = oi[this.i.a.id] ? "StealthStand" : "Mount"), this.bt(t3, this.R), this.x.forEach(((e3) => {
+        this.an && (this.i && (this.i.setAnimation(t3), t3 = oi[this.i.a.id] ? "StealthStand" : "Mount"), this.bt(t3, this.R), this.x.forEach((e3) => {
           if (e3.i) for (let i2 = 0; i2 < e3.i.length; i2++) e3.i[i2].e.setAnimation(t3);
-        })), this.E && this.E.forEach(((e3) => e3.e(t3))));
+        }), this.E && this.E.forEach((e3) => e3.e(t3)));
       }
       by(t3) {
         let e3 = this, i2 = e3.aS.context;
@@ -5090,7 +5085,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         let e3 = t3.x.get(Ti), i2 = t3.x.get(yi), r2 = t3.x.get(Ai), n2 = t3.x.get(Ei), a2 = t3.x.get(Ci), s2 = t3.x.get(Si), o2 = t3.x.get(Mi), l2 = t3.x.get(ki), h2 = t3.x.get(Ui), u2 = t3.x.get(Ii);
         function c2(t4, e4, i3) {
           if (!t4.at) return;
-          let r3 = i3 + 1, n3 = e4 > 0 ? i3 + e4 : r3, a3 = t4.at.some(((t5) => t5.meshId == n3));
+          let r3 = i3 + 1, n3 = e4 > 0 ? i3 + e4 : r3, a3 = t4.at.some((t5) => t5.meshId == n3);
           n3 = a3 ? n3 : r3, t4.bE(n3, n3, true);
         }
         function f2(t4, e4, i3) {
@@ -5098,17 +5093,17 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           let r3 = 100 * i3, n3 = r3 + t4.L[i3] + e4;
           t4.bE(r3, r3 + 99, false), t4.bE(n3, n3, true);
         }
-        if (t3.x.forEach(((t4) => {
+        if (t3.x.forEach((t4) => {
           if (t4 && t4.q) {
             let e4 = t4.q;
             e4.bE(0, Yn, false), t4.b == Ti ? (c2(e4, t4.k[0], 2700), c2(e4, t4.k[1], 2100)) : t4.b == wi ? c2(e4, t4.k[0], 2600) : t4.b == yi ? (c2(e4, t4.k[0], 800), c2(e4, t4.k[1], 1e3)) : t4.b == Ai || t4.b == Bi ? (c2(e4, t4.k[0], 800), c2(e4, t4.k[1], 1e3), c2(e4, t4.k[2], 1300), c2(e4, t4.k[3], 2200), c2(e4, t4.k[4], 2800)) : t4.b == Ei ? c2(e4, t4.k[0], 1800) : t4.b == Ci ? (c2(e4, t4.k[0], 1100), c2(e4, t4.k[1], 900), c2(e4, t4.k[2], 1300)) : t4.b == Si ? (c2(e4, t4.k[0], 500), c2(e4, t4.k[1], 2e3)) : t4.b == ki ? (c2(e4, t4.k[0], 400), c2(e4, t4.k[1], 2300)) : t4.b == Ii ? c2(e4, t4.k[0], 1500) : t4.b == Ui && c2(e4, t4.k[0], 1200);
           }
-        })), t3.x.forEach(((t4) => {
+        }), t3.x.forEach((t4) => {
           if (t4 && t4.i) for (let e4 of t4.i) {
             let i3 = e4.e;
             t4.b == Ti ? (f2(i3, t4.l[0], 27), f2(i3, t4.l[1], 21)) : t4.b == wi ? f2(i3, t4.l[0], 26) : t4.b == yi ? (f2(i3, t4.l[0], 8), f2(i3, t4.l[1], 10)) : t4.b == Ai || t4.b == Bi ? (f2(i3, t4.l[0], 8), f2(i3, t4.l[1], 10), f2(i3, t4.l[2], 13), f2(i3, t4.l[3], 22), f2(i3, t4.l[4], 28)) : t4.b == Ei ? f2(i3, t4.l[0], 18) : t4.b == Ci ? (f2(i3, t4.l[0], 11), f2(i3, t4.l[1], 9), f2(i3, t4.l[2], 13)) : t4.b == Si ? (f2(i3, t4.l[0], 5), f2(i3, t4.l[1], 20)) : t4.b == ki ? (f2(i3, t4.l[0], 4), f2(i3, t4.l[1], 23)) : t4.b == Ii ? f2(i3, t4.l[0], 15) : t4.b == Ui && f2(i3, t4.l[0], 12);
           }
-        })), e3) {
+        }), e3) {
           const i3 = t3.n, r3 = t3.o == ui.MALE ? e3.v : e3.w;
           if (r3) {
             for (let e4 = 0; e4 < r3.length; e4++) if (r3[e4].RaceId == i3) {
@@ -5196,7 +5191,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           e4.bE(0, Yn, false);
           for (let t4 = 0; t4 < e4.K.length; t4++) if (e4.bE(e4.K[t4], e4.K[t4], true), e4.at) {
             let i3 = e4.K[t4];
-            if (e4.at.some(((t5) => t5.meshId == i3))) {
+            if (e4.at.some((t5) => t5.meshId == i3)) {
               let e5 = 100 * t4;
               this.bE(e5, e5 + 99, false);
             }
@@ -5206,11 +5201,11 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       bI() {
         var t3 = this;
         let e3 = false;
-        if (t3.x.forEach(((t4) => {
+        if (t3.x.forEach((t4) => {
           if (t4.m || t4.n) {
             if (t4.j) for (let i3 = 0; i3 < t4.j.length; ++i3) t4.j[i3].texture && !t4.j[i3].texture.g() && (e3 = true);
           } else e3 = true;
-        })), e3) return;
+        }), e3) return;
         if (!t3.C[1][0] || t3.C[1][0] && !t3.C[1][0].e()) return;
         if (!this.aJ) {
           var i2 = t3.C[1][0].a, r2 = i2.a.width, n2 = i2.a.height;
@@ -5219,10 +5214,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         let a2 = this.aJ;
         a2.i();
         let s2 = true, o2 = true;
-        t3.n != fi && t3.n != di || (o2 = false), t3.x.forEach(((t4) => {
+        t3.n != fi && t3.n != di || (o2 = false), t3.x.forEach((t4) => {
           let e4 = t4.e;
           e4 != yi && e4 != Ai && e4 != Ui || (s2 = false), e4 == Ci && (o2 = false);
-        }));
+        });
         let l2, h2 = Yi;
         a2.f != a2.g && (h2 = Zi);
         let u2 = this.F.b.TextureLayers, c2 = this.F.b.TextureSections, f2 = -1;
@@ -5242,7 +5237,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             if (t4 != Gi && t4 != Xi || s2 && t4 == Gi || o2 && t4 == Xi) {
               let n3 = 0, s3 = 0, o3 = 1, u3 = 1;
               if (-1 != t4) if (c2) {
-                let e5 = c2.find(((e6) => e6.SectionType == t4));
+                let e5 = c2.find((e6) => e6.SectionType == t4);
                 n3 = e5.X, s3 = e5.Y, o3 = e5.Width, u3 = e5.Height;
               } else l2 = h2[t4], n3 = l2.x, s3 = l2.y, o3 = l2.w, u3 = l2.h;
               a2.j(r3, n3, s3, o3, u3, e4.BlendMode, e4.Layer, i3);
@@ -5250,11 +5245,11 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           }
         }
         let d2 = [];
-        t3.x.forEach(((t4) => {
+        t3.x.forEach((t4) => {
           d2.push(t4);
-        })), d2.sort((function(t4, e4) {
+        }), d2.sort(function(t4, e4) {
           return t4.f - e4.f;
-        }));
+        });
         for (let e4 = 0; e4 < d2.length; ++e4) {
           let i3 = d2[e4];
           if (i3.j) for (let e5 = 0; e5 < i3.j.length; ++e5) {
@@ -5340,14 +5335,14 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       }
       bQ(t3, e3) {
         let i2, r2 = this;
-        t3 == hi.ITEM ? i2 = "meta/item/" : t3 == hi.HELM ? i2 = "meta/armor/1/" : t3 == hi.SHOULDER ? i2 = "meta/armor/3/" : t3 == hi.NPC || t3 == hi.HUMANOIDNPC ? i2 = "meta/npc/" : t3 == hi.OBJECT ? i2 = "meta/object/" : t3 == hi.CHARACTER ? i2 = "meta/character/" : t3 == hi.ITEMVISUAL && (i2 = "meta/itemvisual/"), i2 ? (i2 = this.k.contentPath + i2 + e3 + ".json", (function(t4) {
-          $.getJSON(i2).done((function(e4) {
+        t3 == hi.ITEM ? i2 = "meta/item/" : t3 == hi.HELM ? i2 = "meta/armor/1/" : t3 == hi.SHOULDER ? i2 = "meta/armor/3/" : t3 == hi.NPC || t3 == hi.HUMANOIDNPC ? i2 = "meta/npc/" : t3 == hi.OBJECT ? i2 = "meta/object/" : t3 == hi.CHARACTER ? i2 = "meta/character/" : t3 == hi.ITEMVISUAL && (i2 = "meta/itemvisual/"), i2 ? (i2 = this.k.contentPath + i2 + e3 + ".json", function(t4) {
+          $.getJSON(i2).done(function(e4) {
             r2.bS(e4, t4);
-          })).fail((function(t5, e4, i3) {
+          }).fail(function(t5, e4, i3) {
             let r3 = e4 + ", " + i3;
             console.log("Model:_load Error loading metadata: " + r3);
-          }));
-        })(t3)) : t3 == hi.PATH && (this.u || (this.u = {}), i2 = this.k.contentPath + "mo3/" + e3 + ".mo3", $.ajax({
+          });
+        }(t3)) : t3 == hi.PATH && (this.u || (this.u = {}), i2 = this.k.contentPath + "mo3/" + e3 + ".mo3", $.ajax({
           url: i2,
           type: "GET",
           dataType: "binary",
@@ -5375,7 +5370,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           let e4 = this.c ? this.c : t3.Model;
           n2.n = t3.Race, n2.o = t3.Gender, n2.k.cls && (n2.p = parseInt(n2.k.cls));
           let a2 = n2.k.contentPath + "meta/charactercustomization2/" + t3.Race + "_" + t3.Gender + ".json";
-          if ($.getJSON(a2, (function(t4) {
+          if ($.getJSON(a2, function(t4) {
             var e5, i3, r3;
             if (WH.debug("Got customization data v2", t4), n2.F = new Xn(n2, t4), null === (e5 = n2.G) || void 0 === e5 || e5.call(n2, n2.F.b), n2.F.c(), n2.q) n2.setAppearance(n2.q);
             else if (n2.a.type != hi.CHARACTER && n2.u.Race > 0 && (null === (r3 = null === (i3 = n2.u) || void 0 === i3 ? void 0 : i3.Creature) || void 0 === r3 ? void 0 : r3.CreatureCustomizations)) {
@@ -5383,7 +5378,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
               n2.setAppearance(t5);
             } else n2.F.f();
             n2.w && n2.bB();
-          })), n2.u.Creature && n2.u.Creature.Texture && (n2.aK = this.bA(-1, gn.a(null, n2.u.TextureFiles[n2.u.Creature.Texture], 3, 0, 0))), n2.bQ(hi.PATH, e4), n2.u.Equipment && n2.bK(n2.u.Equipment), n2.k.items && n2.bK(n2.k.items), n2.k.shouldersOverride && n2.setShouldersOverride(n2.k.shouldersOverride), n2.a.type != hi.CHARACTER && n2.u.Race > 0) {
+          }), n2.u.Creature && n2.u.Creature.Texture && (n2.aK = this.bA(-1, gn.a(null, n2.u.TextureFiles[n2.u.Creature.Texture], 3, 0, 0))), n2.bQ(hi.PATH, e4), n2.u.Equipment && n2.bK(n2.u.Equipment), n2.k.items && n2.bK(n2.k.items), n2.k.shouldersOverride && n2.setShouldersOverride(n2.k.shouldersOverride), n2.a.type != hi.CHARACTER && n2.u.Race > 0) {
             if (n2.F && (null === (r2 = null === (i2 = n2.u) || void 0 === i2 ? void 0 : i2.Creature) || void 0 === r2 ? void 0 : r2.CreatureCustomizations)) {
               let t4 = n2.F.g(n2.u.Creature.CreatureCustomizations);
               n2.q = t4;
@@ -5393,7 +5388,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           let e4 = 1, i3 = 0, r3 = 1;
           if (n2.v && (e4 = n2.v.n, i3 = n2.v.o, r3 = n2.v.p), t3.ComponentModels) {
             let a2 = t3.ComponentModels[0];
-            a2 && t3.ModelFiles && t3.ModelFiles[a2] && (27 == t3.Item.InventoryType ? n2.bQ(hi.PATH, t3.ModelFiles[a2][0].FileDataId) : (n2.v || t3.ModelFiles[a2].some(((t4) => t4.Race == e4)) || (e4 = t3.ModelFiles[a2][0].Race), n2.bQ(hi.PATH, gn.b(n2, t3.ModelFiles[a2], -1, i3, r3, e4))));
+            a2 && t3.ModelFiles && t3.ModelFiles[a2] && (27 == t3.Item.InventoryType ? n2.bQ(hi.PATH, t3.ModelFiles[a2][0].FileDataId) : (n2.v || t3.ModelFiles[a2].some((t4) => t4.Race == e4) || (e4 = t3.ModelFiles[a2][0].Race), n2.bQ(hi.PATH, gn.b(n2, t3.ModelFiles[a2], -1, i3, r3, e4))));
           }
           if (t3.Textures) for (let e5 in t3.Textures) 0 != t3.Textures[e5] && (n2.B[parseInt(e5)] = new an(n2, parseInt(e5), t3.Textures[e5]));
         } else if (e3 == hi.SHOULDER) {
@@ -5631,9 +5626,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           i2 = n2.p.f, r2 = n2.p.e;
           for (let e5 = 0; e5 < i2; ++e5) t3.ak[t3.al[r2 + e5]].k = t3.Q;
         }
-        t3.aL && t3.aL.sort((function(t4, e4) {
+        t3.aL && t3.aL.sort(function(t4, e4) {
           return t4.b != e4.b ? t4.b - e4.b : t4.meshId - e4.meshId;
-        }));
+        });
         let s2 = t3.ap.length, o2 = t3.aT;
         if (t3.ap && t3.an) {
           for (let e4 = 0; e4 < s2; ++e4) t3.ap[e4].r = false;
@@ -5667,7 +5662,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           for (i3 += n3.d; i3 < e4 && n3.h > -1; ) r3 = n3.h, n3 = this.an[r3], i3 += n3.d;
           t3.b.a = r3, t3.b.b = this.an[r3], t3.b.c = 0;
         } else {
-          let e4 = this.an.find(((e5) => e5.a == t3.a.b.a && 0 == e5.b));
+          let e4 = this.an.find((e5) => e5.a == t3.a.b.a && 0 == e5.b);
           e4 && (t3.b.a = e4.i, t3.b.b = e4, t3.b.c = 0);
         }
         let i2 = t3.a, r2 = t3.b, n2 = i2.b.g - i2.c, a2 = 0, s2 = null;
@@ -5679,7 +5674,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
       bY(t3) {
         var e3 = this;
         if (this.v ? ir(e3.V, this.v.V) : e3.V = er(1, 1, 1, 1), e3.i && e3.i.bY(t3), e3.d) {
-          if (e3.j && e3.j.bY(t3), e3.bW(), this.E && this.E.forEach(((e4) => e4.g(t3))), e3.aW = {
+          if (e3.j && e3.j.bY(t3), e3.bW(), this.E && this.E.forEach((e4) => e4.g(t3)), e3.aW = {
             uModelMatrix: e3.U,
             uViewMatrix: e3.aS.viewMatrix,
             uProjMatrix: e3.aS.projMatrix,
@@ -5697,7 +5692,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             e3.aG[i2].X(e3.R, e3.aS.delta, r2), e3.aG[i2].Y(t3);
           }
           if (e3.aH && e3.g) for (let i2 = 0; i2 < e3.aH.length; ++i2) e3.aH[i2].ar(e3.R, e3.aS.delta), e3.aH[i2].av(), e3.aH[i2].aw(t3);
-          if (e3.aR && e3.bG(e3.aR, t3), e3.x.forEach(((i2, r2) => {
+          if (e3.aR && e3.bG(e3.aR, t3), e3.x.forEach((i2, r2) => {
             if (i2) {
               if (2 == i2.c && 13 == i2.d) {
                 if (i2.e == Pi && -1 != e3.H) return;
@@ -5705,9 +5700,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
               }
               i2.C(t3);
             }
-          })), e3.y.forEach(((e4, i2) => {
+          }), e3.y.forEach((e4, i2) => {
             e4 && e4.i && e4.C(t3);
-          })), e3.A) for (let i2 = 0; i2 < e3.A.length; i2++) for (let i3 = 0; i3 < e3.A.length; i3++) {
+          }), e3.A) for (let i2 = 0; i2 < e3.A.length; i2++) for (let i3 = 0; i3 < e3.A.length; i3++) {
             let r2 = e3.A[i3];
             if (!r2.d) continue;
             let n2 = e3.aC[e3.k.extraModels[i3][1]];
@@ -5718,9 +5713,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             let a2 = e3.aB[n2], s2 = e3.k.extraModels[i3][2];
             Ae(e3.aN, s2, s2, s2), qe(e3.aM), Je(e3.aM, e3.aM, e3.aN), Ke(e3.aM, e3.aM, e3.k.extraModels[i3][3]), $e(e3.aM, e3.aM, e3.k.extraModels[i3][4]), Qe(e3.aM, e3.aM, e3.k.extraModels[i3][5]), r2.bs(e3.U, e3.ap[a2.b].m, a2.c, e3.aM), r2.bW(), r2.bY(t3);
           }
-          e3.x.forEach(((i2, r2) => {
+          e3.x.forEach((i2, r2) => {
             i2 && i2.q && e3.bG(i2.q, t3);
-          }));
+          });
         }
       }
     }
@@ -5795,9 +5790,9 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           rateCurrent: 0,
           target: 1,
           current: 1
-        }, e3.zoom.range = e3.zoom.range.map((function(t4) {
+        }, e3.zoom.range = e3.zoom.range.map(function(t4) {
           return Math.log(t4) / Math.log(1 + e3.zoom.rateStep);
-        })), e3.translation = we(0, 0, 0), e3.target = we(0, 0, 0), e3.eye = we(0, 0, 0), e3.up = we(0, 0, 1), e3.lookDir = ve(), e3.fullscreen = false, e3.projMatrix = je(), e3.viewMatrix = je(), e3.panningMatrix = je(), e3.viewOffset = ve(), e3.aniFilterExt = null, e3.aniFilterMax = 0, this.addedCss || (this.addedCss = true, $("head"));
+        }), e3.translation = we(0, 0, 0), e3.target = we(0, 0, 0), e3.eye = we(0, 0, 0), e3.up = we(0, 0, 1), e3.lookDir = ve(), e3.fullscreen = false, e3.projMatrix = je(), e3.viewMatrix = je(), e3.panningMatrix = je(), e3.viewOffset = ve(), e3.aniFilterExt = null, e3.aniFilterMax = 0, this.addedCss || (this.addedCss = true, $("head"));
       }
       updateProgress() {
         var t3 = this, e3 = 0, i2 = 0;
@@ -5833,12 +5828,12 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         i2.delta = 1e-3 * (t3 - i2.time), i2.time = t3, i2.currFrame++, i2.updateCamera(), r2.bindFramebuffer(r2.FRAMEBUFFER, null), r2.viewport(0, 0, i2.width, i2.height), r2.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], 0), r2.clear(r2.COLOR_BUFFER_BIT | r2.DEPTH_BUFFER_BIT), i2.bgTexture && i2.program && (r2.useProgram(i2.program), r2.activeTexture(r2.TEXTURE0), r2.bindTexture(r2.TEXTURE_2D, i2.bgTexture), r2.uniform1i(i2.uTexture, 0), r2.bindBuffer(r2.ARRAY_BUFFER, i2.vb), r2.bindBuffer(r2.ELEMENT_ARRAY_BUFFER, null), r2.enableVertexAttribArray(i2.aPosition), r2.vertexAttribPointer(i2.aPosition, 2, r2.FLOAT, false, 16, 0), r2.enableVertexAttribArray(i2.aTexCoord), r2.vertexAttribPointer(i2.aTexCoord, 2, r2.FLOAT, false, 16, 8), r2.depthMask(false), r2.disable(r2.CULL_FACE), r2.blendFunc(r2.ONE, r2.ZERO), r2.drawArrays(r2.TRIANGLE_STRIP, 0, 4), r2.blendFunc(r2.SRC_ALPHA, r2.ONE_MINUS_SRC_ALPHA), r2.enable(r2.CULL_FACE), r2.depthMask(true), r2.disableVertexAttribArray(i2.aPosition), r2.disableVertexAttribArray(i2.aTexCoord));
         let n2 = new Array();
         for (e3 = 0; e3 < i2.models.length; ++e3) i2.models[e3].bY(n2);
-        n2.sort(((t4, e4) => {
+        n2.sort((t4, e4) => {
           let i3 = t4.e > 1, r3 = e4.e > 1;
           return i3 > r3 ? 1 : i3 < r3 ? -1 : t4.m != e4.m ? e4.m > t4.m ? -1 : 1 : t4.n > e4.n ? -1 : t4.n < e4.n ? 1 : e4.o != t4.o ? e4.o < t4.o ? 1 : -1 : e4.e != t4.e ? t4.e < e4.e ? -1 : 1 : 0;
-        })), r2.viewport(0, 0, i2.width, i2.height), this.attributeState.disableAll(), n2.forEach(((t4) => {
+        }), r2.viewport(0, 0, i2.width, i2.height), this.attributeState.disableAll(), n2.forEach((t4) => {
           r2.useProgram(t4.a.program), r2.bindBuffer(r2.ARRAY_BUFFER, t4.c), r2.bindBuffer(r2.ELEMENT_ARRAY_BUFFER, t4.d), this.attributeState.enable(r2, t4.a.attributes), re(t4.a, t4.b), t4.h ? r2.enable(r2.CULL_FACE) : r2.disable(r2.CULL_FACE), t4.i ? r2.frontFace(r2.CCW) : r2.frontFace(r2.CW), this.setBlendMode(r2, t4.e), r2.depthMask(t4.f), r2.drawElements(t4.j, t4.k, r2.UNSIGNED_SHORT, t4.l);
-        })), this.attributeState.disableAll();
+        }), this.attributeState.disableAll();
       }
       setAdaptiveMode(t3) {
         this.addaptiveMode = t3, t3 && $(window).trigger("resize");
@@ -5888,10 +5883,10 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
         var t3 = this;
         t3.zoom.target += t3.zoom.rateCurrent, t3.zoom.rateCurrent *= 1 - t3.zoom.rateAccelerationDecay, t3.zoom.target = -Math.max(Math.min(-t3.zoom.target, t3.zoom.range[1]), t3.zoom.range[0]), t3.zoom.current += (t3.zoom.target - t3.zoom.current) * t3.zoom.interpolationRate;
         var e3 = t3.distance * Math.pow(t3.zoom.rateStep + 0.7, -t3.zoom.current), i2 = t3.azimuth, r2 = t3.zenith;
-        1 == t3.up[2] ? (t3.eye[0] = -e3 * Math.sin(r2) * Math.cos(i2) + t3.target[0], t3.eye[1] = -e3 * Math.sin(r2) * Math.sin(i2) + t3.target[1], t3.eye[2] = -e3 * Math.cos(r2) + t3.target[2]) : (t3.eye[0] = -e3 * Math.sin(r2) * Math.cos(i2) + t3.target[0], t3.eye[1] = -e3 * Math.cos(r2) + t3.target[1], t3.eye[2] = -e3 * Math.sin(r2) * Math.sin(i2) + t3.target[2]), Ce(t3.lookDir, t3.target, t3.eye), Ue(t3.lookDir, t3.lookDir), (function(t4, e4, i3, r3) {
+        1 == t3.up[2] ? (t3.eye[0] = -e3 * Math.sin(r2) * Math.cos(i2) + t3.target[0], t3.eye[1] = -e3 * Math.sin(r2) * Math.sin(i2) + t3.target[1], t3.eye[2] = -e3 * Math.cos(r2) + t3.target[2]) : (t3.eye[0] = -e3 * Math.sin(r2) * Math.cos(i2) + t3.target[0], t3.eye[1] = -e3 * Math.cos(r2) + t3.target[1], t3.eye[2] = -e3 * Math.sin(r2) * Math.sin(i2) + t3.target[2]), Ce(t3.lookDir, t3.target, t3.eye), Ue(t3.lookDir, t3.lookDir), function(t4, e4, i3, r3) {
           var n2, a2, s2, o2, l2, h2, u2, c2, f2, d2, b2 = e4[0], g2 = e4[1], _2 = e4[2], p2 = r3[0], m2 = r3[1], v2 = r3[2], x2 = i3[0], T2 = i3[1], w2 = i3[2];
           Math.abs(b2 - x2) < pe && Math.abs(g2 - T2) < pe && Math.abs(_2 - w2) < pe ? qe(t4) : (u2 = b2 - x2, c2 = g2 - T2, f2 = _2 - w2, n2 = m2 * (f2 *= d2 = 1 / Math.hypot(u2, c2, f2)) - v2 * (c2 *= d2), a2 = v2 * (u2 *= d2) - p2 * f2, s2 = p2 * c2 - m2 * u2, (d2 = Math.hypot(n2, a2, s2)) ? (n2 *= d2 = 1 / d2, a2 *= d2, s2 *= d2) : (n2 = 0, a2 = 0, s2 = 0), o2 = c2 * s2 - f2 * a2, l2 = f2 * n2 - u2 * s2, h2 = u2 * a2 - c2 * n2, (d2 = Math.hypot(o2, l2, h2)) ? (o2 *= d2 = 1 / d2, l2 *= d2, h2 *= d2) : (o2 = 0, l2 = 0, h2 = 0), t4[0] = n2, t4[1] = o2, t4[2] = u2, t4[3] = 0, t4[4] = a2, t4[5] = l2, t4[6] = c2, t4[7] = 0, t4[8] = s2, t4[9] = h2, t4[10] = f2, t4[11] = 0, t4[12] = -(n2 * b2 + a2 * g2 + s2 * _2), t4[13] = -(o2 * b2 + l2 * g2 + h2 * _2), t4[14] = -(u2 * b2 + c2 * g2 + f2 * _2), t4[15] = 1);
-        })(t3.viewMatrix, t3.eye, t3.target, t3.up), qe(t3.panningMatrix), 1 == t3.up[2] ? Ae(t3.viewOffset, t3.translation[0], -t3.translation[1], 0) : Ae(t3.viewOffset, t3.translation[0], 0, t3.translation[1]), Ze(t3.panningMatrix, t3.panningMatrix, t3.viewOffset), Ye(t3.viewMatrix, t3.panningMatrix, t3.viewMatrix);
+        }(t3.viewMatrix, t3.eye, t3.target, t3.up), qe(t3.panningMatrix), 1 == t3.up[2] ? Ae(t3.viewOffset, t3.translation[0], -t3.translation[1], 0) : Ae(t3.viewOffset, t3.translation[0], 0, t3.translation[1]), Ze(t3.panningMatrix, t3.panningMatrix, t3.viewOffset), Ye(t3.viewMatrix, t3.panningMatrix, t3.viewMatrix);
       }
       init() {
         var t3, e3 = this, i2 = e3.context;
@@ -5902,7 +5897,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
           var n2 = [].concat(e3.options.models);
           if (n2.length > 0) for (t3 = 0; t3 < n2.length; ++t3) e3.models.push(new r2(e3, e3.options, n2[t3], t3, true, false, false));
         }
-        !(function t4() {
+        !function t4() {
           if (!e3.stop) {
             window.requestAnimationFrame(t4);
             var r3 = e3.getTime();
@@ -5928,7 +5923,7 @@ Error in program linking: ${e4}`), t3.deleteProgram(h2), Wt(t3, o2), null;
             }
             e3.draw(r3);
           }
-        })();
+        }();
       }
       onDoubleClick(t3) {
         ea.isFullscreen() ? ea.exitFullscreen() : ea.requestFullscreen(this.canvas[0]);
@@ -6527,6 +6522,52 @@ function monitorDraw() {
   window.WH?.debug("[TIMING] draw() monitor installed");
 }
 
+// shader-warmup.js
+var _warmed = false;
+function compileTrivial(gl) {
+  const vsSrc = "attribute vec2 aPos;void main(){gl_Position=vec4(aPos,0.0,1.0);}";
+  const fsSrc = "precision lowp float;void main(){gl_FragColor=vec4(0.0);}";
+  const vs = gl.createShader(gl.VERTEX_SHADER);
+  const fs = gl.createShader(gl.FRAGMENT_SHADER);
+  if (!vs || !fs) return;
+  gl.shaderSource(vs, vsSrc);
+  gl.shaderSource(fs, fsSrc);
+  gl.compileShader(vs);
+  gl.compileShader(fs);
+  const prog = gl.createProgram();
+  if (prog) {
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    gl.deleteProgram(prog);
+  }
+  gl.deleteShader(vs);
+  gl.deleteShader(fs);
+}
+function warmupShaders() {
+  if (_warmed) return;
+  _warmed = true;
+  const run = () => {
+    try {
+      const c = document.createElement("canvas");
+      c.width = c.height = 1;
+      const gl = c.getContext("webgl") || c.getContext("experimental-webgl");
+      if (!gl) return;
+      compileTrivial(gl);
+      const lose = gl.getExtension("WEBGL_lose_context");
+      lose?.loseContext();
+      window.WH?.debug("[SHADER-WARMUP] compiler primed");
+    } catch (e) {
+      window.WH?.debug(`[SHADER-WARMUP] skipped: ${e}`);
+    }
+  };
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(run, { timeout: 1e3 });
+  } else {
+    setTimeout(run, 0);
+  }
+}
+
 // mo3-cache.js
 var _cache = /* @__PURE__ */ new Map();
 var _baseUrl = () => window.CONTENT_PATH || "/data/";
@@ -6627,75 +6668,12 @@ function clear() {
   _cache.clear();
 }
 
-// shader-warmup.js
-var _warmed = false;
-function compileTrivial(gl) {
-  const vsSrc = "attribute vec2 aPos;void main(){gl_Position=vec4(aPos,0.0,1.0);}";
-  const fsSrc = "precision lowp float;void main(){gl_FragColor=vec4(0.0);}";
-  const vs = gl.createShader(gl.VERTEX_SHADER);
-  const fs = gl.createShader(gl.FRAGMENT_SHADER);
-  if (!vs || !fs) return;
-  gl.shaderSource(vs, vsSrc);
-  gl.shaderSource(fs, fsSrc);
-  gl.compileShader(vs);
-  gl.compileShader(fs);
-  const prog = gl.createProgram();
-  if (prog) {
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    gl.deleteProgram(prog);
-  }
-  gl.deleteShader(vs);
-  gl.deleteShader(fs);
-}
-function warmupShaders() {
-  if (_warmed) return;
-  _warmed = true;
-  const run = () => {
-    try {
-      const c = document.createElement("canvas");
-      c.width = c.height = 1;
-      const gl = c.getContext("webgl") || c.getContext("experimental-webgl");
-      if (!gl) return;
-      compileTrivial(gl);
-      const lose = gl.getExtension("WEBGL_lose_context");
-      lose?.loseContext();
-      window.WH?.debug("[SHADER-WARMUP] compiler primed");
-    } catch (e) {
-      window.WH?.debug(`[SHADER-WARMUP] skipped: ${e}`);
-    }
-  };
-  if (typeof requestIdleCallback === "function") {
-    requestIdleCallback(run, { timeout: 1e3 });
-  } else {
-    setTimeout(run, 0);
-  }
-}
-
 // index.js
-function predictMo3Ids(model) {
-  if (model.id && model.type) {
-    return { highPriority: [String(model.id)], lowPriority: [] };
-  }
-  const high = [];
-  if (model.race && RACES[model.race]) {
-    const gender = model.gender === 1 ? "female" : "male";
-    high.push(RACES[model.race] + gender);
-  }
-  const low = (model.items || []).filter((e) => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.has(e[0])).map((e) => String(e[1]));
-  return { highPriority: high, lowPriority: low };
-}
 async function generateModels(aspect, containerSelector, model) {
   if (model.contentPath) window.CONTENT_PATH = model.contentPath;
   initNetMonitor();
   warmupShaders();
   mark(`generateModels start`);
-  const { highPriority, lowPriority } = predictMo3Ids(model);
-  if (highPriority.length || lowPriority.length) {
-    start(`mo3 preload (parallel)`);
-    preloadPrioritized(highPriority, lowPriority).finally(() => end(`mo3 preload (parallel)`));
-  }
   let modelOptions;
   let fullOptions;
   if (model.id && model.type) {
