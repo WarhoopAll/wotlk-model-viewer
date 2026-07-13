@@ -4,40 +4,18 @@ import {
     optionsFromModel,
     getDisplaySlot,
     findItemsInEquipments,
-    modelingType,
-    RACES,
-    NOT_DISPLAYED_SLOTS
+    modelingType
 } from "./character_modeling.js"
 
 import "./setup.js"
 import { mark, start, end, summary, initNetMonitor, netSummary, monitorDraw } from './profile.js'
-import { preload, preloadPrioritized } from './mo3-cache.js'
 import { warmupShaders } from './shader-warmup.js'
 
-/**
- * Predicts the .mo3 ids that will be requested for the model so we can
- * start fetching them in parallel with the JSON customization options,
- * instead of serializing network behind `new WowModelViewer()`.
- *
- * @param model {{race?: number, gender?: number, id?: number, type?: number, items?: Array}}
- * @returns {{highPriority: string[], lowPriority: string[]}}
- */
-function predictMo3Ids(model) {
-    if (model.id && model.type) {
-        // bare model/NPC/item — only the model archive itself
-        return { highPriority: [String(model.id)], lowPriority: [] }
-    }
-    const high = []
-    if (model.race && RACES[model.race]) {
-        const gender = (model.gender === 1) ? 'female' : 'male'
-        high.push(RACES[model.race] + gender)
-    }
-    // equipment display ids are lower priority — body mesh gates the first frame
-    const low = (model.items || [])
-        .filter(e => Array.isArray(e) && !NOT_DISPLAYED_SLOTS.has(e[0]))
-        .map(e => String(e[1]))
-    return { highPriority: high, lowPriority: low }
-}
+// NOTE: .mo3 ids are NOT predictable from the model alone — the engine derives
+// them from the `ModelFiles` field of the meta JSON it fetches at runtime
+// (see bQ() in vendor/viewer.min.js). Attempting to preload them ahead of time
+// from race/gender/equipment display ids only produces 404s. Callers who know
+// the real archive ids can still use `preload`/`preloadPrioritized` directly.
 
 /**
  *
@@ -52,16 +30,6 @@ async function generateModels(aspect, containerSelector, model) {
     // Prime the GPU shader compiler during idle time while the network runs.
     warmupShaders()
     mark(`generateModels start`)
-
-    // Kick off .mo3 preload in parallel with JSON option fetching so the
-    // network round-trips overlap instead of running back-to-back.
-    const {highPriority, lowPriority} = predictMo3Ids(model)
-    if (highPriority.length || lowPriority.length) {
-        start(`mo3 preload (parallel)`)
-        // intentionally NOT awaited: runs concurrently with the work below
-        preloadPrioritized(highPriority, lowPriority)
-            .finally(() => end(`mo3 preload (parallel)`))
-    }
 
     let modelOptions
     let fullOptions
